@@ -1,0 +1,15 @@
+# Variables de entorno — NUNCA commitear
+backend/.env
+frontend/src/config.js
+
+# Dependencias
+node_modules/
+**/node_modules/
+
+# Logs
+*.log
+logs/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db

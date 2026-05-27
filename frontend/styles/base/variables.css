@@ -1,0 +1,45 @@
+/* =============================================================
+   frontend/styles/base/variables.css
+   Variables CSS globales para el tema
+   ============================================================= */
+
+   :root {
+    /* Paleta principal */
+    --color-primary: #007bff;
+    --color-primary-dark: #0056b3;
+    --color-secondary: #6c757d;
+    
+    /* Estados */
+    --color-success: #28a745;
+    --color-danger: #dc3545;
+    --color-warning: #ffc107;
+    --color-info: #17a2b8;
+  
+    /* Fondos y bordes */
+    --color-background: #f8f9fa;
+    --color-background-alt: #e9ecef;
+    --color-border: #ced4da;
+  
+    /* Texto */
+    --color-text: #212529;
+    --color-text-light: #6c757d;
+  
+    /* Espaciados y estructura */
+    --border-radius-sm: 4px;
+    --border-radius-md: 8px;
+    --border-radius-lg: 12px;
+  
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+  
+    /* Tipografía */
+    --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  
+  body {
+    font-family: var(--font-family-base);
+    color: var(--color-text);
+    background-color: var(--color-background);
+    margin: 0;
+    padding: 0;
+  }
