@@ -1,7 +1,5 @@
 [build]
-  # Netlify corre este comando antes de publicar.
-  # Genera src/config.js con las variables de entorno del dashboard de Netlify.
-  command = "printf 'export const CONFIG = {\\n  API_URL: \"%s\",\\n  SUPABASE_URL: \"%s\",\\n  SUPABASE_ANON_KEY: \"%s\"\\n};\\n' \"$API_URL\" \"$SUPABASE_URL\" \"$SUPABASE_ANON_KEY\" > src/config.js"
+  command = "node scripts/generate-config.js"
   publish = "."
 
 # SPA routing: cualquier ruta que no sea un archivo estático
