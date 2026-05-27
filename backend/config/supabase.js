@@ -13,6 +13,7 @@
 // =============================================================
 
 const { createClient } = require('@supabase/supabase-js');
+const ws = require('ws');
 const env = require('./env');
 
 const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_KEY, {
@@ -21,6 +22,8 @@ const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_KEY, {
     persistSession: false,
     autoRefreshToken: false,
   },
+  // Node < 22 no tiene WebSocket nativo — ws lo provee para que Supabase pueda inicializar
+  realtime: { transport: ws },
 });
 
 module.exports = supabase;
