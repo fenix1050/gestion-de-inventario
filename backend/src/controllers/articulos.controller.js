@@ -52,7 +52,7 @@ const getById = async (req, res) => {
  */
 const create = async (req, res) => {
   try {
-    const creado = await articulosService.crearArticulo(req.body);
+    const creado = await articulosService.crearArticulo(req.body, req.user.id);
     return created(res, creado, 'Artículo creado correctamente.');
   } catch (e) {
     if (e.code === 'DUPLICATE_CODE') return badRequest(res, e.message);

@@ -1,0 +1,24 @@
+/* =============================================================
+   frontend/styles/main.css
+   Punto de entrada de estilos — importa en orden: base → components → pages
+   ============================================================= */
+
+/* Base */
+@import './base/reset.css';
+@import './base/variables.css';
+@import './base/typography.css';
+
+/* Components */
+@import './components/buttons.css';
+@import './components/navbar.css';
+@import './components/sidebar.css';
+@import './components/table.css';
+@import './components/modal.css';
+@import './components/toast.css';
+
+/* Pages */
+@import './pages/dashboard.css';
+@import './pages/articulos.css';
+@import './pages/ingresos.css';
+@import './pages/salidas.css';
+@import './pages/reportes.css';

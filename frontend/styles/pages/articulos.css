@@ -1,0 +1,133 @@
+/* =============================================================
+   frontend/styles/pages/articulos.css
+   Estilos específicos para la página de artículos
+   ============================================================= */
+
+/* Barra de herramientas: buscador + botón de acción */
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+/* Input de búsqueda */
+.input {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  font-size: 0.95rem;
+  min-width: 220px;
+  background: #fff;
+  color: var(--color-text);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.15);
+}
+
+/* Tabla de artículos */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  box-shadow: var(--shadow-sm);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+}
+
+.table th {
+  padding: 0.875rem 1rem;
+  border-bottom: 2px solid var(--color-border);
+  text-align: left;
+  background: var(--color-background-alt);
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-text);
+}
+
+.table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 0.9rem;
+  vertical-align: middle;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table tbody tr:hover {
+  background-color: var(--color-background);
+}
+
+/* Celda de acciones: botones juntos */
+.acciones {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* Badge de estado de stock */
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--border-radius-sm);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.badge--danger {
+  background-color: rgba(220, 53, 69, 0.12);
+  color: var(--color-danger);
+}
+
+.badge--success {
+  background-color: rgba(40, 167, 69, 0.12);
+  color: var(--color-success);
+}
+
+/* Estado vacío */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--color-text-light);
+  font-size: 1rem;
+}
+
+/* Botón pequeño (también usado en filas de tabla) */
+.btn--sm {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.85rem;
+}
+
+/* Wrapper de tabla con scroll horizontal en pantallas chicas */
+.table-wrapper {
+  overflow-x: auto;
+}
+
+/* Mensaje de error en contenedor de tabla */
+.error-message {
+  color: var(--color-danger);
+  padding: 1rem 0;
+}
+
+/* Página de artículos */
+.page--articulos {
+  padding: 1.5rem;
+}
+
+.page__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.page__header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}

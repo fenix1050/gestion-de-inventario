@@ -6,7 +6,7 @@
 const supabase = require('../../config/supabase');
 
 // Columnas explícitas — nunca SELECT * (regla del proyecto)
-const COLUMNS = 'id, codigo, nombre, categoria, precio_unitario, stock_actual, stock_minimo, unidad_medida, activo, created_at, updated_at';
+const COLUMNS = 'id, codigo, nombre, descripcion, categoria, precio_unitario, stock_actual, stock_minimo, unidad_medida, activo, created_at, updated_at';
 
 /**
  * Crea un error de dominio tipado.
@@ -74,12 +74,16 @@ const getArticuloById = async (id) => {
 
 /**
  * Crear un nuevo artículo.
- * Normaliza codigo a UPPERCASE antes de persistir.
- * @param {Object} data - campos del artículo (validados por Zod)
+ * Si stock_inicial > 0, registra un ingreso para que el trigger de Postgres
+ * actualice stock_actual — nunca se escribe stock_actual directo.
+ * @param {Object} data - campos validados por Zod (puede incluir stock_inicial)
+ * @param {string} usuarioId - UUID del usuario autenticado (requerido para el ingreso)
  */
-const crearArticulo = async (data) => {
-  // Normalización de código: el negocio espera ABC123 == abc123 (mismo artículo)
-  const payload = { ...data, codigo: data.codigo.toUpperCase() };
+const crearArticulo = async (data, usuarioId) => {
+  // Extraer stock_inicial antes de insertar en articulos (no es columna de esa tabla)
+  const { stock_inicial = 0, ...camposArticulo } = data;
+
+  const payload = { ...camposArticulo, codigo: camposArticulo.codigo.toUpperCase() };
 
   const { data: creado, error } = await supabase
     .from('articulos')
@@ -88,11 +92,35 @@ const crearArticulo = async (data) => {
     .single();
 
   if (error) {
-    // 23505 = unique_violation en PostgreSQL
     if (error.code === '23505') {
       throw domainError('DUPLICATE_CODE', 'Ya existe un artículo con ese código.');
     }
     throw new Error(error.message);
+  }
+
+  // Registrar ingreso inicial si corresponde → el trigger suma al stock_actual
+  if (stock_inicial > 0) {
+    const { error: errorIngreso } = await supabase
+      .from('ingresos')
+      .insert({
+        articulo_id:     creado.id,
+        cantidad:        stock_inicial,
+        precio_unitario: creado.precio_unitario,
+        usuario_id:      usuarioId,
+        referencia:      'Stock inicial',
+      });
+
+    if (errorIngreso) throw new Error(`Artículo creado, pero falló el ingreso inicial: ${errorIngreso.message}`);
+
+    // Refrescar el artículo para devolver el stock_actual ya actualizado por el trigger
+    const { data: actualizado, error: errorRefresh } = await supabase
+      .from('articulos')
+      .select(COLUMNS)
+      .eq('id', creado.id)
+      .single();
+
+    if (errorRefresh) return creado; // el trigger ya corrió, devolver lo que tenemos
+    return actualizado;
   }
 
   return creado;
