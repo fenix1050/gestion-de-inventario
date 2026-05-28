@@ -92,9 +92,24 @@ const softDelete = async (req, res) => {
   }
 };
 
+/**
+ * GET /api/articulos/siguiente-codigo
+ * Devuelve el siguiente código ART-XXX libre (incluye artículos inactivos)
+ */
+const getSiguienteCodigo = async (req, res) => {
+  try {
+    const codigo = await articulosService.getSiguienteCodigo();
+    return ok(res, { codigo });
+  } catch (e) {
+    logger.error('Error en getSiguienteCodigo:', e);
+    return serverError(res, 'Error al calcular el siguiente código.');
+  }
+};
+
 module.exports = {
   getList,
   getById,
+  getSiguienteCodigo,
   create,
   update,
   softDelete,

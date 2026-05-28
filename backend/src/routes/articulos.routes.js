@@ -13,8 +13,9 @@ const { crearArticuloSchema, actualizarArticuloSchema } = require('../models/art
 const router = Router();
 
 // Lectura: todos los roles autenticados
-router.get('/',       requireAuth, requireRol('consultor', 'operador', 'admin'), ctrl.getList);
-router.get('/:id',    requireAuth, requireRol('consultor', 'operador', 'admin'), ctrl.getById);
+router.get('/',                requireAuth, requireRol('consultor', 'operador', 'admin'), ctrl.getList);
+router.get('/siguiente-codigo', requireAuth, requireRol('admin'), ctrl.getSiguienteCodigo);
+router.get('/:id',             requireAuth, requireRol('consultor', 'operador', 'admin'), ctrl.getById);
 
 // Escritura: solo admin
 router.post('/',      requireAuth, requireRol('admin'), validate(crearArticuloSchema),     ctrl.create);

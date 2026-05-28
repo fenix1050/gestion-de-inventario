@@ -37,17 +37,31 @@
   font-size: 1.125rem;
 }
 
+.modal__subtitle {
+  margin: 0.15rem 0 0;
+  font-size: 0.8rem;
+  color: var(--color-primary);
+}
+
 .modal__close {
   background: transparent;
-  border: 0;
-  font-size: 1.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  font-size: 1.25rem;
   line-height: 1;
   cursor: pointer;
   color: var(--color-text-light);
-  padding: 0.25rem;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s, color 0.15s;
 }
 
 .modal__close:hover {
+  background: var(--color-background-alt);
   color: var(--color-text);
 }
 
@@ -62,4 +76,158 @@
   gap: 0.5rem;
   padding: 1rem 1.25rem;
   border-top: 1px solid var(--color-border);
+}
+
+/* ── Drawer (panel lateral derecho) ── */
+.modal-overlay--drawer {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: flex-end;
+  z-index: 1000;
+}
+
+.modal--drawer {
+  width: min(100%, 480px);
+  max-height: 100vh;
+  border-radius: 0;
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+  animation: drawer-slide-in 0.22s ease-out;
+}
+
+@keyframes drawer-slide-in {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+
+/* ── Form grid dentro del drawer ── */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-grid .form__field--full {
+  grid-column: 1 / -1;
+}
+
+.form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.form__field span,
+.form__field label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.form__field input,
+.form__field select,
+.form__field textarea {
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-sm);
+  font-size: 0.9rem;
+  font-family: inherit;
+  color: var(--color-text);
+  background: #fff;
+  transition: border-color 0.15s;
+}
+
+.form__field input:focus,
+.form__field select:focus,
+.form__field textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.15);
+}
+
+.form__field textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.form__hint {
+  font-size: 0.8rem;
+  color: var(--color-danger);
+  margin: 0;
+  padding: 0.5rem 0 0;
+  grid-column: 1 / -1;
+}
+
+/* ── Sección generación de código ── */
+.codigo-gen {
+  grid-column: 1 / -1;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  padding: 1rem;
+  background: var(--color-background);
+}
+
+.codigo-gen__title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin: 0 0 0.75rem;
+  color: var(--color-text);
+}
+
+.codigo-gen__options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.codigo-gen__option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.codigo-gen__option input[type="radio"] {
+  accent-color: var(--color-danger, #dc3545);
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+  margin: 0;
+}
+
+.codigo-gen__sugerido {
+  color: var(--color-text-light);
+  font-size: 0.8rem;
+  margin-left: 0.25rem;
+}
+
+/* ── Botones icono en tabla ── */
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: none;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  background: transparent;
+  transition: background 0.15s;
+}
+
+.btn-icon--edit {
+  color: var(--color-secondary);
+}
+.btn-icon--edit:hover {
+  background: rgba(108, 117, 125, 0.12);
+}
+
+.btn-icon--delete {
+  color: var(--color-danger);
+}
+.btn-icon--delete:hover {
+  background: rgba(220, 53, 69, 0.1);
 }

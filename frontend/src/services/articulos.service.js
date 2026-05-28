@@ -55,3 +55,10 @@ export function actualizarArticulo(id, data) {
 export function eliminarArticulo(id) {
   return apiFetch(`/articulos/${id}`, { method: 'DELETE' });
 }
+
+/**
+ * Obtiene el siguiente código ART-XXX libre (incluye inactivos).
+ */
+export function getSiguienteCodigo() {
+  return apiFetch('/articulos/siguiente-codigo');
+}

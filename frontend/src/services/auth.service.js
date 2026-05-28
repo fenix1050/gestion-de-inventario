@@ -5,6 +5,7 @@
 
 import { CONFIG } from '../config.js';
 import { authStore } from '../store/auth.store.js';
+import { apiFetch } from './api.js';
 
 export const authService = {
   /**
@@ -30,13 +31,17 @@ export const authService = {
       throw new Error(data.error_description || data.msg || 'Credenciales incorrectas');
     }
 
-    // data contiene access_token y user
-    const { access_token, user } = data;
-    
-    // Guardamos en el store global
-    authStore.login(access_token, user);
-    
-    return user;
+    // data contiene access_token y user (objeto crudo de Supabase, sin rol del sistema)
+    const { access_token } = data;
+
+    // Guardamos el token primero para que apiFetch pueda usarlo
+    authStore.token = access_token;
+
+    // Obtener el perfil enriquecido (con rol) desde nuestra tabla usuarios
+    const perfil = await apiFetch('/auth/me');
+    authStore.login(access_token, perfil);
+
+    return perfil;
   },
 
   /**

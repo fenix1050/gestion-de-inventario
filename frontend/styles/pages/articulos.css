@@ -12,6 +12,13 @@
   gap: 1rem;
 }
 
+/* Agrupación buscador + botón actualizar */
+.toolbar__search {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
 /* Input de búsqueda */
 .input {
   padding: 0.5rem 0.75rem;

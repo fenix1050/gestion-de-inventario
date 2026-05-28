@@ -26,6 +26,7 @@ function getContainer() {
  */
 export function showModal({
   title,
+  subtitle,
   content,
   onConfirm,
   onCancel,
@@ -36,23 +37,36 @@ export function showModal({
 } = {}) {
   const container = getContainer();
 
+  const isDrawer  = variant === 'drawer';
+  const isDanger  = variant === 'confirm';
+
   const cancelBtn = (!hideCancel)
     ? `<button type="button" class="btn btn--secondary" data-action="cancel">${cancelText}</button>`
     : '';
 
   const confirmBtn = onConfirm
-    ? `<button type="button" class="btn ${variant === 'confirm' ? 'btn--danger' : 'btn--primary'}" data-action="confirm">${confirmText}</button>`
+    ? `<button type="button" class="btn ${isDanger ? 'btn--danger' : 'btn--primary'}" data-action="confirm">${confirmText}</button>`
     : '';
 
   const footer = (cancelBtn || confirmBtn)
     ? `<div class="modal__footer">${cancelBtn}${confirmBtn}</div>`
     : '';
 
+  const subtitleHTML = subtitle
+    ? `<p class="modal__subtitle">${subtitle}</p>`
+    : '';
+
+  const overlayClass = isDrawer ? 'modal-overlay--drawer' : 'modal-overlay';
+  const modalClass   = isDrawer ? 'modal modal--drawer'   : 'modal';
+
   container.innerHTML = `
-    <div class="modal-overlay" data-action="overlay">
-      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="${overlayClass}" data-action="overlay">
+      <div class="${modalClass}" role="dialog" aria-modal="true" aria-labelledby="modal-title">
         <header class="modal__header">
-          <h2 id="modal-title" class="modal__title">${title}</h2>
+          <div>
+            <h2 id="modal-title" class="modal__title">${title}</h2>
+            ${subtitleHTML}
+          </div>
           <button type="button" class="modal__close" data-action="close" aria-label="Cerrar">&times;</button>
         </header>
         <div class="modal__body">${content ?? ''}</div>
@@ -61,8 +75,8 @@ export function showModal({
     </div>
   `;
 
-  const overlay = container.querySelector('.modal-overlay');
-  const modalEl = container.querySelector('.modal');
+  const overlay = container.querySelector('[data-action="overlay"]');
+  const modalEl = container.querySelector('[role="dialog"]');
 
   const handleClose = () => {
     closeModal();

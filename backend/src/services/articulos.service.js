@@ -133,7 +133,8 @@ const crearArticulo = async (data, usuarioId) => {
  * @param {Object} data - campos a actualizar (validados por Zod .partial())
  */
 const actualizarArticulo = async (id, data) => {
-  const payload = { ...data };
+  // Extraer stock_inicial por si llega en el body — no es columna de articulos
+  const { stock_inicial, ...payload } = data;
   // Normalizar código si viene en el payload
   if (payload.codigo) payload.codigo = payload.codigo.toUpperCase();
 
@@ -175,9 +176,32 @@ const desactivarArticulo = async (id) => {
   return data;
 };
 
+/**
+ * Calcula el siguiente código ART-XXX libre considerando todos los artículos
+ * (activos e inactivos) para evitar duplicados tras soft-delete.
+ */
+const getSiguienteCodigo = async () => {
+  const { data, error } = await supabase
+    .from('articulos')
+    .select('codigo');
+
+  if (error) throw new Error(error.message);
+
+  const nums = (data || [])
+    .map(a => {
+      const m = a.codigo?.match(/^ART-(\d+)$/i);
+      return m ? parseInt(m[1], 10) : 0;
+    })
+    .filter(n => n > 0);
+
+  const siguiente = nums.length ? Math.max(...nums) + 1 : 1;
+  return `ART-${String(siguiente).padStart(3, '0')}`;
+};
+
 module.exports = {
   getArticulos,
   getArticuloById,
+  getSiguienteCodigo,
   crearArticulo,
   actualizarArticulo,
   desactivarArticulo,

@@ -11,7 +11,8 @@ export const render = async (container) => {
   container.innerHTML = `
     <div style="padding: 2rem;">
       <h1>Dashboard</h1>
-      <p>Bienvenido/a, <strong>${user?.user_metadata?.nombre_completo || user?.email || 'Usuario'}</strong>!</p>
+      <p>Bienvenido/a, <strong>${user?.email || 'Usuario'}</strong></p>
+      <p style="color: var(--color-text-light); font-size: 0.875rem;">Rol: <strong>${user?.rol || '—'}</strong></p>
       
       <div style="margin-top: 2rem; display: flex; gap: 1rem;">
         <button id="btn-articulos" style="padding: 0.5rem 1rem; cursor: pointer;">Ir a Artículos</button>

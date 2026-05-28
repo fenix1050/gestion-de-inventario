@@ -9,7 +9,7 @@ const { Router } = require('express');
 const router = Router();
 
 // --- Rutas disponibles (se van descomentando a medida que se implementan) ---
-// router.use('/auth',         require('./auth.routes'));
+router.use('/auth',         require('./auth.routes'));
 router.use('/articulos',    require('./articulos.routes'));
 // router.use('/ingresos',     require('./ingresos.routes'));
 // router.use('/salidas',      require('./salidas.routes'));
