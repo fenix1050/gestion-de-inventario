@@ -14,20 +14,16 @@ const supabase = require('../../config/supabase');
 const requireRol = (...rolesPermitidos) => {
   return async (req, res, next) => {
     try {
-      if (!req.user || !req.user.sub) {
+      // supabase.auth.getUser() devuelve el usuario con campo `id`, no `sub`
+      const userId = req.user.id;
+      if (!req.user || !userId) {
         return unauthorized(res, 'No se pudo identificar al usuario. Iniciá sesión de nuevo.');
       }
 
-      // En el JWT de Supabase no viene el rol que definimos en la tabla `usuarios`.
-      // Podríamos haber metido el rol en user_metadata, pero acá consultamos nuestra
-      // tabla `usuarios` para asegurarnos de tener el rol actual.
-      // Como esto se ejecuta en cada request protegida por rol, y usamos la
-      // service_role, podemos consultar rápido.
-      
       const { data: usuario, error } = await supabase
         .from('usuarios')
         .select('rol')
-        .eq('id', req.user.sub)
+        .eq('id', userId)
         .single();
 
       if (error || !usuario) {
