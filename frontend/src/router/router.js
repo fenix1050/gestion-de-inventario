@@ -36,6 +36,10 @@ const routes = {
     const { render } = await import('../pages/usuarios.js');
     return render;
   },
+  '/inventario': async () => {
+    const { render } = await import('../pages/inventario.js');
+    return render;
+  },
   // Agregaremos más a medida que se implementen
 };
 
