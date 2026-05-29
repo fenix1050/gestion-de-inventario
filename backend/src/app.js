@@ -10,6 +10,7 @@ const cors    = require('cors');
 const env     = require('../config/env');
 const logger  = require('./utils/logger');
 const routes  = require('./routes/index');
+const { errorHandler } = require('./middlewares/errorHandler');
 
 const app = express();
 
@@ -76,10 +77,6 @@ app.use((_req, res) => {
 // Debe tener los 4 parámetros (err, req, res, next) para que
 // Express lo reconozca como error handler
 // -------------------------------------------------------------
-// eslint-disable-next-line no-unused-vars
-app.use((err, _req, res, _next) => {
-  logger.error(err.message || err);
-  res.status(500).json({ success: false, error: 'Error interno del servidor.' });
-});
+app.use(errorHandler);
 
 module.exports = app;

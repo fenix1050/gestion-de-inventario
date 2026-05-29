@@ -20,6 +20,18 @@ const routes = {
     const { render } = await import('../pages/articulos.js');
     return render;
   },
+  '/ingresos': async () => {
+    const { render } = await import('../pages/ingresos.js');
+    return render;
+  },
+  '/salidas': async () => {
+    const { render } = await import('../pages/salidas.js');
+    return render;
+  },
+  '/historial': async () => {
+    const { render } = await import('../pages/historial.js');
+    return render;
+  },
   // Agregaremos más a medida que se implementen
 };
 

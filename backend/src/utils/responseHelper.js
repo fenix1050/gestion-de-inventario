@@ -49,4 +49,16 @@ const forbidden   = (res, msg)  => error(res, msg || 'No tenés permisos para re
 const notFound    = (res, msg)  => error(res, msg || 'Recurso no encontrado.', 404);
 const serverError = (res, msg)  => error(res, msg || 'Error interno del servidor.', 500);
 
-module.exports = { ok, created, error, badRequest, unauthorized, forbidden, notFound, serverError };
+/**
+ * Crea un error de dominio con código tipado para que errorHandler lo mapee a 400.
+ * Uso: throw createDomainError('STOCK_INSUFICIENTE', 'Stock insuficiente...')
+ * @param {string} code - código del DOMAIN_400_CODES en errorHandler
+ * @param {string} message - mensaje en español para el cliente
+ */
+const createDomainError = (code, message) => {
+  const err = new Error(message);
+  err.code = code;
+  return err;
+};
+
+module.exports = { ok, created, error, badRequest, unauthorized, forbidden, notFound, serverError, createDomainError };
