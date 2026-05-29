@@ -8,14 +8,13 @@ const ctrl = require('../controllers/salidas.controller');
 const { requireAuth } = require('../middlewares/auth.middleware');
 const { requireRol } = require('../middlewares/roles.middleware');
 const { validate } = require('../middlewares/validate.middleware');
-const { salidaCreateSchema } = require('../models/salida.model');
+const { salidaCreateSchema, salidaUpdateSchema } = require('../models/salida.model');
 
 const router = Router();
 
-// Escritura: solo operador y admin
-router.post('/', requireAuth, requireRol('operador', 'admin'), validate(salidaCreateSchema), ctrl.crear);
-
-// Lectura: cualquier usuario autenticado
-router.get('/', requireAuth, ctrl.listar);
+router.post('/',      requireAuth, requireRol('operador', 'admin'), validate(salidaCreateSchema), ctrl.crear);
+router.get('/',       requireAuth, ctrl.listar);
+router.patch('/:id',  requireAuth, requireRol('operador', 'admin'), validate(salidaUpdateSchema), ctrl.actualizar);
+router.delete('/:id', requireAuth, requireRol('operador', 'admin'), ctrl.eliminar);
 
 module.exports = router;

@@ -66,4 +66,38 @@ const getIngresos = async ({ articulo_id, proveedor_id, desde, hasta, limit = 20
   return data;
 };
 
-module.exports = { crearIngreso, getIngresos };
+const actualizarIngreso = async (id, payload) => {
+  const { data: prev, error: errPrev } = await supabase
+    .from('ingresos').select('articulo_id').eq('id', id).single();
+  if (errPrev) throw new Error(errPrev.message);
+
+  const { data, error } = await supabase
+    .from('ingresos')
+    .update(payload)
+    .eq('id', id)
+    .select('id, fecha, cantidad, precio_unitario, referencia, proveedor_nombre, observaciones')
+    .single();
+
+  if (error) throw new Error(error.message);
+
+  const { data: articulo } = await supabase
+    .from('articulos').select('stock_actual').eq('id', prev.articulo_id).single();
+
+  return { ingreso: data, stock_actual: articulo?.stock_actual ?? null };
+};
+
+const eliminarIngreso = async (id) => {
+  const { data: prev, error: errPrev } = await supabase
+    .from('ingresos').select('articulo_id').eq('id', id).single();
+  if (errPrev) throw new Error(errPrev.message);
+
+  const { error } = await supabase.from('ingresos').delete().eq('id', id);
+  if (error) throw new Error(error.message);
+
+  const { data: articulo } = await supabase
+    .from('articulos').select('stock_actual').eq('id', prev.articulo_id).single();
+
+  return { stock_actual: articulo?.stock_actual ?? null };
+};
+
+module.exports = { crearIngreso, getIngresos, actualizarIngreso, eliminarIngreso };

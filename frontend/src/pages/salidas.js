@@ -4,7 +4,7 @@
 // Botón "Registrar Salida" visible solo a operador y admin.
 // =============================================================
 
-import { getSalidas, crearSalida } from '../services/salidas.service.js';
+import { getSalidas, crearSalida, actualizarSalida, eliminarSalida } from '../services/salidas.service.js';
 import { getArticulos } from '../services/articulos.service.js';
 import { getDepartamentos } from '../services/departamentos.service.js';
 import { getUsuarios } from '../services/usuarios.service.js';
@@ -62,6 +62,8 @@ async function cargarSalidas() {
 }
 
 function renderTabla(cont, salidas) {
+  const puedeEditar = ['operador', 'admin'].includes(authStore.user?.rol);
+
   if (salidas.length === 0) {
     cont.innerHTML = `<p class="empty-state">No hay salidas registradas.</p>`;
     return;
@@ -75,6 +77,23 @@ function renderTabla(cont, salidas) {
       <td>${escapeHtml(sal.departamento?.nombre ?? '—')}</td>
       <td>${escapeHtml(sal.colaborador?.nombre_completo ?? '—')}</td>
       <td>${escapeHtml(sal.registrado_por?.nombre_completo ?? '—')}</td>
+      ${puedeEditar ? `
+      <td class="acciones">
+        <button type="button" class="btn-icon btn-icon--edit" data-action="editar" data-id="${sal.id}" title="Editar">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+          </svg>
+        </button>
+        <button type="button" class="btn-icon btn-icon--delete" data-action="eliminar" data-id="${sal.id}" title="Eliminar">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+            <path d="M10 11v6M14 11v6"/>
+            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+          </svg>
+        </button>
+      </td>` : ''}
     </tr>
   `).join('');
 
@@ -88,11 +107,28 @@ function renderTabla(cont, salidas) {
           <th>Departamento</th>
           <th>Colaborador</th>
           <th>Registrado por</th>
+          ${puedeEditar ? '<th>Acciones</th>' : ''}
         </tr>
       </thead>
       <tbody>${filas}</tbody>
     </table>
   `;
+
+  if (puedeEditar) wireAccionesSalidas(cont, salidas);
+}
+
+function wireAccionesSalidas(cont, salidas) {
+  cont.querySelector('tbody').addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-action]');
+    if (!btn) return;
+    const id = btn.dataset.id;
+    if (btn.dataset.action === 'editar') {
+      const sal = salidas.find((s) => String(s.id) === String(id));
+      if (sal) abrirDrawerEditar(sal);
+    } else if (btn.dataset.action === 'eliminar') {
+      confirmarEliminarSalida(id);
+    }
+  });
 }
 
 function renderPaginacion(salidas) {
@@ -257,6 +293,84 @@ async function submitForm() {
       submitBtn.textContent = 'Registrar';
     }
   }
+}
+
+function abrirDrawerEditar(sal) {
+  showModal({
+    title: 'Editar Salida',
+    variant: 'drawer',
+    content: formEditarHTML(sal),
+    confirmText: 'Guardar Cambios',
+    onConfirm: () => submitFormEditar(sal.id),
+  });
+}
+
+function formEditarHTML(sal) {
+  return `
+    <form id="form-salida-editar" class="form-grid" novalidate>
+      <div class="form__field form__field--full">
+        <label class="form-label">Artículo</label>
+        <p class="form-static">${escapeHtml(sal.articulo?.nombre ?? '—')}</p>
+      </div>
+      <label class="form__field">
+        <span>Cantidad *</span>
+        <input name="cantidad" type="number" min="1" step="1" required value="${sal.cantidad}">
+      </label>
+      <label class="form__field form__field--full">
+        <span>Observaciones</span>
+        <textarea name="observaciones" maxlength="500">${escapeHtml(sal.observaciones ?? '')}</textarea>
+      </label>
+    </form>
+  `;
+}
+
+function submitFormEditar(id) {
+  const form = document.getElementById('form-salida-editar');
+  if (!form || !form.checkValidity()) {
+    form?.reportValidity();
+    return;
+  }
+
+  const fd = new FormData(form);
+  const payload = { cantidad: parseInt(fd.get('cantidad'), 10) };
+  const observaciones = fd.get('observaciones')?.trim();
+  payload.observaciones = observaciones || null;
+
+  const submitBtn = document.querySelector('#modal-container button[data-action="confirm"]');
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Guardando...'; }
+
+  actualizarSalida(id, payload)
+    .then((result) => {
+      closeModal();
+      Toast.success(`Salida actualizada. Stock actual: ${result.data?.stock_actual ?? '—'}`);
+      cargarSalidas();
+    })
+    .catch((err) => {
+      const mensaje = err.message?.toLowerCase().includes('stock insuficiente')
+        ? 'No hay stock suficiente para esta cantidad.'
+        : err.message;
+      Toast.error(mensaje);
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Guardar Cambios'; }
+    });
+}
+
+function confirmarEliminarSalida(id) {
+  showModal({
+    variant: 'confirm',
+    title: 'Eliminar salida',
+    content: `<p>¿Seguro que querés eliminar esta salida? El stock del artículo se <strong>devolverá automáticamente</strong>.</p>`,
+    confirmText: 'Eliminar',
+    onConfirm: async () => {
+      try {
+        const result = await eliminarSalida(id);
+        closeModal();
+        Toast.success(`Salida eliminada. Stock actual: ${result.data?.stock_actual ?? '—'}`);
+        cargarSalidas();
+      } catch (err) {
+        Toast.error(err.message);
+      }
+    },
+  });
 }
 
 // ------- Utilidades locales -------

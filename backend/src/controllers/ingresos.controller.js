@@ -41,4 +41,24 @@ const listar = async (req, res, next) => {
   }
 };
 
-module.exports = { crear, listar };
+// PATCH /api/ingresos/:id
+const actualizar = async (req, res, next) => {
+  try {
+    const data = await ingresosService.actualizarIngreso(req.params.id, req.body);
+    return ok(res, data, 'Ingreso actualizado correctamente.');
+  } catch (err) {
+    next(err);
+  }
+};
+
+// DELETE /api/ingresos/:id
+const eliminar = async (req, res, next) => {
+  try {
+    const data = await ingresosService.eliminarIngreso(req.params.id);
+    return ok(res, data, 'Ingreso eliminado y stock recalculado.');
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = { crear, listar, actualizar, eliminar };

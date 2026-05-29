@@ -39,3 +39,14 @@ export function crearIngreso(payload) {
     body: JSON.stringify(payload),
   });
 }
+
+export function actualizarIngreso(id, payload) {
+  return apiFetch(`/ingresos/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  });
+}
+
+export function eliminarIngreso(id) {
+  return apiFetch(`/ingresos/${id}`, { method: 'DELETE' });
+}

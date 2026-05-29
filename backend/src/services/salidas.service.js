@@ -130,4 +130,42 @@ const getSalidas = async ({ page = 1, limit = 20, articulo_id, departamento_id, 
   }));
 };
 
-module.exports = { crearSalida, getSalidas };
+const actualizarSalida = async (id, payload) => {
+  const { data: prev, error: errPrev } = await supabase
+    .from('salidas').select('articulo_id').eq('id', id).single();
+  if (errPrev) throw new Error(errPrev.message);
+
+  const { data, error } = await supabase
+    .from('salidas')
+    .update(payload)
+    .eq('id', id)
+    .select('id, fecha, cantidad, observaciones')
+    .single();
+
+  if (error) {
+    if (error.code === 'P0001')
+      throw createDomainError('STOCK_INSUFICIENTE', 'Stock insuficiente para actualizar la salida.');
+    throw new Error(error.message);
+  }
+
+  const { data: articulo } = await supabase
+    .from('articulos').select('stock_actual').eq('id', prev.articulo_id).single();
+
+  return { salida: data, stock_actual: articulo?.stock_actual ?? null };
+};
+
+const eliminarSalida = async (id) => {
+  const { data: prev, error: errPrev } = await supabase
+    .from('salidas').select('articulo_id').eq('id', id).single();
+  if (errPrev) throw new Error(errPrev.message);
+
+  const { error } = await supabase.from('salidas').delete().eq('id', id);
+  if (error) throw new Error(error.message);
+
+  const { data: articulo } = await supabase
+    .from('articulos').select('stock_actual').eq('id', prev.articulo_id).single();
+
+  return { stock_actual: articulo?.stock_actual ?? null };
+};
+
+module.exports = { crearSalida, getSalidas, actualizarSalida, eliminarSalida };

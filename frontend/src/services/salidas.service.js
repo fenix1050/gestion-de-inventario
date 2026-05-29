@@ -39,3 +39,14 @@ export function crearSalida(payload) {
     body: JSON.stringify(payload),
   });
 }
+
+export function actualizarSalida(id, payload) {
+  return apiFetch(`/salidas/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  });
+}
+
+export function eliminarSalida(id) {
+  return apiFetch(`/salidas/${id}`, { method: 'DELETE' });
+}

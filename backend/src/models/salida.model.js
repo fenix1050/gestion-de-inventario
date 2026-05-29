@@ -17,4 +17,9 @@ const salidaCreateSchema = z.object({
   observaciones:   z.string().trim().max(500, 'máximo 500 caracteres').optional(),
 }).strict();
 
-module.exports = { salidaCreateSchema };
+const salidaUpdateSchema = z.object({
+  cantidad:      z.number().int('debe ser entero').positive('debe ser mayor a 0').optional(),
+  observaciones: z.string().trim().max(500, 'máximo 500 caracteres').optional(),
+}).strict();
+
+module.exports = { salidaCreateSchema, salidaUpdateSchema };
