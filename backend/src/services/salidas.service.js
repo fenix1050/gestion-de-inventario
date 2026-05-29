@@ -101,10 +101,33 @@ const getSalidas = async ({ page = 1, limit = 20, articulo_id, departamento_id, 
   if (fecha_desde)     query = query.gte('fecha', fecha_desde);
   if (fecha_hasta)     query = query.lte('fecha', fecha_hasta);
 
-  const { data, error } = await query;
+  const { data: salidas, error } = await query;
 
   if (error) throw new Error(error.message);
-  return data;
+
+  // Enriquecer salidas con nombres de colaborador y registrado_por.
+  // Usamos fetch + merge porque la FK actual apunta a auth.users (no a
+  // public.usuarios), lo que impide el embed nativo de PostgREST.
+  const ids = [...new Set(
+    salidas.flatMap(s => [s.colaborador_id, s.usuario_id]).filter(Boolean)
+  )];
+
+  if (ids.length === 0) return salidas;
+
+  const { data: usuarios, error: errUsuarios } = await supabase
+    .from('usuarios')
+    .select('id, nombre_completo')
+    .in('id', ids);
+
+  if (errUsuarios) throw new Error(errUsuarios.message);
+
+  const byId = Object.fromEntries(usuarios.map(u => [u.id, u]));
+
+  return salidas.map(s => ({
+    ...s,
+    colaborador:    s.colaborador_id ? (byId[s.colaborador_id] ?? null) : null,
+    registrado_por: s.usuario_id     ? (byId[s.usuario_id]     ?? null) : null,
+  }));
 };
 
 module.exports = { crearSalida, getSalidas };

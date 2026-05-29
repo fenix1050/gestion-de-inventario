@@ -76,8 +76,8 @@ function renderTabla(cont, salidas) {
       <td>${escapeHtml(sal.articulo?.nombre ?? '—')}</td>
       <td>${sal.cantidad}</td>
       <td>${escapeHtml(sal.departamento?.nombre ?? '—')}</td>
-      <td>${escapeHtml(sal.colaborador_id ?? '—')}</td>
-      <td>${escapeHtml(sal.usuario_id ?? '—')}</td>
+      <td>${escapeHtml(sal.colaborador?.nombre_completo ?? '—')}</td>
+      <td>${escapeHtml(sal.registrado_por?.nombre_completo ?? '—')}</td>
     </tr>
   `).join('');
 

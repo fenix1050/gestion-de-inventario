@@ -22,12 +22,16 @@ const requireRol = (...rolesPermitidos) => {
 
       const { data: usuario, error } = await supabase
         .from('usuarios')
-        .select('rol')
+        .select('rol, activo')
         .eq('id', userId)
         .single();
 
       if (error || !usuario) {
         return forbidden(res, 'No se encontró tu perfil de usuario en el sistema.');
+      }
+
+      if (!usuario.activo) {
+        return unauthorized(res, 'Tu cuenta está desactivada. Contactá al administrador.');
       }
 
       // Guardamos el rol en el req para que los controllers no tengan que buscarlo de nuevo

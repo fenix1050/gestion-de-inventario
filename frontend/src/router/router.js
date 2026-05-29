@@ -32,6 +32,10 @@ const routes = {
     const { render } = await import('../pages/historial.js');
     return render;
   },
+  '/usuarios': async () => {
+    const { render } = await import('../pages/usuarios.js');
+    return render;
+  },
   // Agregaremos más a medida que se implementen
 };
 
