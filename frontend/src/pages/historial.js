@@ -34,15 +34,15 @@ export const render = async (container) => {
           <option value="">Todos los artículos</option>
         </select>
 
-        <label class="filtro-label">
-          Desde
-          <input type="date" id="filtro-fecha-desde" class="filtro-input">
-        </label>
+        <div class="filtro-grupo">
+          <label for="filtro-fecha-desde">Desde</label>
+          <input type="date" id="filtro-fecha-desde">
+        </div>
 
-        <label class="filtro-label">
-          Hasta
-          <input type="date" id="filtro-fecha-hasta" class="filtro-input">
-        </label>
+        <div class="filtro-grupo">
+          <label for="filtro-fecha-hasta">Hasta</label>
+          <input type="date" id="filtro-fecha-hasta">
+        </div>
 
         <button type="button" id="btn-aplicar-filtros" class="btn btn--primary">Aplicar filtros</button>
         <button type="button" id="btn-limpiar-filtros" class="btn btn--secondary">Limpiar</button>

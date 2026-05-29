@@ -1,3 +1,21 @@
+.filtros-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.filtros-bar .filtro-select {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-sm);
+  font-size: 0.875rem;
+  color: var(--color-text);
+  background-color: #fff;
+  height: 36px;
+}
+
 .badge--entrada {
   display: inline-flex;
   align-items: center;
