@@ -22,12 +22,8 @@ function formatFecha(fechaISO) {
 function esHoy(fechaISO) {
   if (!fechaISO) return false;
   const hoy = new Date();
-  const fecha = new Date(fechaISO);
-  return (
-    fecha.getFullYear() === hoy.getFullYear() &&
-    fecha.getMonth() === hoy.getMonth() &&
-    fecha.getDate() === hoy.getDate()
-  );
+  const hoyStr = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-${String(hoy.getDate()).padStart(2, '0')}`;
+  return fechaISO.slice(0, 10) === hoyStr;
 }
 
 // Construye el HTML del badge de estado de stock

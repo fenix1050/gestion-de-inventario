@@ -35,8 +35,9 @@ let pageContentEl = null;
 let hashChangeHandler = null;
 
 function closeDropdown() {
-  if (!sidebarEl) return;
-  const dropdown = sidebarEl.querySelector('.sidebar-user-dropdown');
+  const navbar = document.getElementById('top-navbar');
+  if (!navbar) return;
+  const dropdown = navbar.querySelector('.sidebar-user-dropdown');
   if (dropdown) dropdown.hidden = true;
 }
 
@@ -52,27 +53,39 @@ export const Sidebar = {
     const user = authStore.user;
     if (!user) throw new Error('Sidebar.mount requiere sesión activa');
 
-    // Limpiar #app y construir el shell de dos columnas
+    // Limpiar #app y construir el shell: navbar top + (sidebar | content)
     appContainer.innerHTML = '';
     appContainer.classList.add('has-shell');
 
+    // Navbar superior full-width
+    const navbarEl = document.createElement('header');
+    navbarEl.id = 'top-navbar';
+    navbarEl.innerHTML = buildNavbarHTML(user);
+
+    // Contenedor inferior: sidebar + page-content
+    const shellBodyEl = document.createElement('div');
+    shellBodyEl.id = 'shell-body';
+
     sidebarEl = document.createElement('aside');
     sidebarEl.id = 'sidebar';
-    sidebarEl.innerHTML = buildSidebarHTML(user);
+    sidebarEl.innerHTML = buildSidebarHTML();
 
     pageContentEl = document.createElement('main');
     pageContentEl.id = 'page-content';
 
-    appContainer.appendChild(sidebarEl);
-    appContainer.appendChild(pageContentEl);
+    shellBodyEl.appendChild(sidebarEl);
+    shellBodyEl.appendChild(pageContentEl);
+
+    appContainer.appendChild(navbarEl);
+    appContainer.appendChild(shellBodyEl);
 
     // Registrar listener de hashchange para actualizar link activo
     hashChangeHandler = () => updateActiveLink();
     window.addEventListener('hashchange', hashChangeHandler);
 
-    // Toggle del dropdown de usuario
-    const avatarBtn = sidebarEl.querySelector('[data-action="toggle-user-menu"]');
-    const dropdown = sidebarEl.querySelector('.sidebar-user-dropdown');
+    // Toggle del dropdown de usuario (ahora en el navbar)
+    const avatarBtn = navbarEl.querySelector('[data-action="toggle-user-menu"]');
+    const dropdown = navbarEl.querySelector('.sidebar-user-dropdown');
 
     avatarBtn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -83,13 +96,13 @@ export const Sidebar = {
     document.addEventListener('click', closeDropdown);
 
     // Logout desde dropdown
-    sidebarEl.querySelector('[data-action="logout"]').addEventListener('click', (e) => {
+    navbarEl.querySelector('[data-action="logout"]').addEventListener('click', (e) => {
       e.preventDefault();
       handleLogout();
     });
 
     // Ir a dashboard desde dropdown
-    sidebarEl.querySelector('[data-action="go-dashboard"]').addEventListener('click', () => {
+    navbarEl.querySelector('[data-action="go-dashboard"]').addEventListener('click', () => {
       dropdown.hidden = true;
     });
 
@@ -126,10 +139,47 @@ export const Sidebar = {
 };
 
 /**
- * Construye el HTML interno del sidebar filtrando items por rol del usuario.
+ * Construye el HTML del navbar superior (marca + avatar con dropdown).
  * @param {{ nombre?: string, email: string, rol: string }} user
  */
-function buildSidebarHTML(user) {
+function buildNavbarHTML(user) {
+  const displayName = user.nombre ?? user.email;
+  const initials = getInitials(displayName);
+
+  return `
+    <div class="navbar-brand">
+      <img src="./public/logo/logo.svg" alt="Tajy" class="navbar-logo">
+      <span>Aseguradora Tajy</span>
+    </div>
+    <div class="sidebar-avatar-wrap">
+      <button type="button" class="sidebar-avatar" data-action="toggle-user-menu" aria-label="Menú de usuario">
+        ${initials}
+      </button>
+      <div class="sidebar-user-dropdown" hidden>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name">${displayName}</div>
+          <div class="sidebar-user-email">${user.email}</div>
+          <div class="sidebar-user-rol">Rol: ${capitalize(user.rol)}</div>
+        </div>
+        <div class="sidebar-user-actions">
+          <a href="#/dashboard" class="sidebar-dropdown-link" data-action="go-dashboard">
+            ${ICONS.dashboard} Dashboard
+          </a>
+          <button type="button" class="sidebar-dropdown-link sidebar-dropdown-logout" data-action="logout">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Cerrar Sesión
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+/**
+ * Construye el HTML interno del sidebar (solo links de navegación).
+ */
+function buildSidebarHTML() {
+  const user = authStore.user;
   const items = NAV_ITEMS
     .filter((item) => item.roles.includes(user.rol))
     .map(
@@ -141,37 +191,7 @@ function buildSidebarHTML(user) {
     )
     .join('');
 
-  const displayName = user.nombre ?? user.email;
-  const initials = getInitials(displayName);
-
-  return `
-    <div class="sidebar-header">
-      <span class="sidebar-brand">Gestión Tajy</span>
-      <div class="sidebar-avatar-wrap">
-        <button type="button" class="sidebar-avatar" data-action="toggle-user-menu" aria-label="Menú de usuario">
-          ${initials}
-        </button>
-        <div class="sidebar-user-dropdown" hidden>
-          <div class="sidebar-user-info">
-            <div class="sidebar-user-name">${displayName}</div>
-            <div class="sidebar-user-email">${user.email}</div>
-            <div class="sidebar-user-rol">Rol: ${capitalize(user.rol)}</div>
-          </div>
-          <div class="sidebar-user-actions">
-            <a href="#/dashboard" class="sidebar-dropdown-link" data-action="go-dashboard">
-              ${ICONS.dashboard} Dashboard
-            </a>
-            <button type="button" class="sidebar-dropdown-link sidebar-dropdown-logout" data-action="logout">
-              <span>↪</span> Cerrar Sesión
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <nav class="sidebar-nav">
-      ${items}
-    </nav>
-  `;
+  return `<nav class="sidebar-nav">${items}</nav>`;
 }
 
 function getInitials(name) {

@@ -14,10 +14,49 @@
   --sidebar-border: #e5e7eb;
 }
 
-/* Shell de dos columnas — se activa solo cuando el sidebar está montado */
+/* Shell: columna (navbar arriba + cuerpo abajo) */
 #app.has-shell {
   display: flex;
+  flex-direction: column;
   height: 100vh;
+  overflow: hidden;
+}
+
+/* ---- Navbar superior ---- */
+#top-navbar {
+  height: 52px;
+  flex-shrink: 0;
+  background-color: #ffffff;
+  border-bottom: 1px solid var(--sidebar-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.25rem;
+  z-index: 50;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: 0.02em;
+}
+
+.navbar-logo {
+  height: 28px;
+  width: auto;
+  background-color: var(--color-primary);
+  border-radius: 4px;
+  padding: 3px 6px;
+}
+
+/* ---- Cuerpo: sidebar + contenido ---- */
+#shell-body {
+  display: flex;
+  flex: 1;
   overflow: hidden;
 }
 
@@ -25,7 +64,6 @@
 #sidebar {
   width: var(--sidebar-width);
   flex-shrink: 0;
-  height: 100vh;
   background-color: var(--sidebar-bg);
   color: var(--sidebar-text);
   border-right: 1px solid var(--sidebar-border);
@@ -37,22 +75,8 @@
 /* ---- Área de contenido ---- */
 #page-content {
   flex: 1;
-  height: 100vh;
   overflow-y: auto;
   background-color: var(--color-background);
-}
-
-/* ---- Header del sidebar ---- */
-.sidebar-header {
-  padding: 1.25rem 1rem;
-  border-bottom: 1px solid var(--sidebar-border);
-}
-
-.sidebar-brand {
-  font-size: 1rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  color: var(--color-primary);
 }
 
 /* ---- Navegación ---- */
@@ -103,12 +127,7 @@
   color: inherit;
 }
 
-/* ---- Avatar + dropdown de usuario (en el header) ---- */
-.sidebar-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+/* ---- Avatar + dropdown de usuario (en el navbar) ---- */
 
 .sidebar-avatar-wrap {
   position: relative;
