@@ -13,7 +13,7 @@ const { ok, created } = require('../utils/responseHelper');
  */
 const crear = async (req, res, next) => {
   try {
-    const data = await ingresosService.crearIngreso(req.body);
+    const data = await ingresosService.crearIngreso({ ...req.body, usuario_id: req.user.id });
     return created(res, data, 'Ingreso registrado correctamente.');
   } catch (err) {
     next(err);
