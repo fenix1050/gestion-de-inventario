@@ -5,11 +5,13 @@
 
 :root {
   --sidebar-width: 240px;
-  --sidebar-bg: var(--color-primary-dark);
-  --sidebar-text: #f8f9fa;
-  --sidebar-text-muted: rgba(248, 249, 250, 0.65);
-  --sidebar-active-bg: rgba(255, 255, 255, 0.15);
-  --sidebar-hover-bg: rgba(255, 255, 255, 0.08);
+  --sidebar-bg: #ffffff;
+  --sidebar-text: #374151;
+  --sidebar-text-muted: #9ca3af;
+  --sidebar-active-bg: var(--color-primary);
+  --sidebar-active-text: #ffffff;
+  --sidebar-hover-bg: #f3f4f6;
+  --sidebar-border: #e5e7eb;
 }
 
 /* Shell de dos columnas — se activa solo cuando el sidebar está montado */
@@ -26,6 +28,7 @@
   height: 100vh;
   background-color: var(--sidebar-bg);
   color: var(--sidebar-text);
+  border-right: 1px solid var(--sidebar-border);
   display: flex;
   flex-direction: column;
   overflow-y: auto;
@@ -42,14 +45,14 @@
 /* ---- Header del sidebar ---- */
 .sidebar-header {
   padding: 1.25rem 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--sidebar-border);
 }
 
 .sidebar-brand {
   font-size: 1rem;
   font-weight: 700;
   letter-spacing: 0.02em;
-  color: var(--sidebar-text);
+  color: var(--color-primary);
 }
 
 /* ---- Navegación ---- */
@@ -66,7 +69,7 @@
   align-items: center;
   gap: 0.625rem;
   padding: 0.625rem 1rem;
-  color: var(--sidebar-text-muted);
+  color: var(--sidebar-text);
   text-decoration: none;
   font-size: 0.9rem;
   border-radius: 0;
@@ -80,9 +83,10 @@
 
 .sidebar-link.is-active {
   background-color: var(--sidebar-active-bg);
-  color: var(--sidebar-text);
+  color: var(--sidebar-active-text);
   font-weight: 600;
-  border-left: 3px solid var(--sidebar-text);
+  border-left: none;
+  border-radius: var(--border-radius-sm);
 }
 
 .sidebar-icon {
@@ -95,7 +99,7 @@
 /* ---- Footer del sidebar ---- */
 .sidebar-footer {
   padding: 0.75rem 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--sidebar-border);
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -126,7 +130,7 @@
   width: 100%;
   padding: 0.4rem 0.75rem;
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: 1px solid var(--sidebar-border);
   border-radius: var(--border-radius-sm);
   color: var(--sidebar-text-muted);
   font-size: 0.8rem;
@@ -136,7 +140,7 @@
 }
 
 .sidebar-logout:hover {
-  background-color: rgba(220, 53, 69, 0.3);
-  border-color: rgba(220, 53, 69, 0.6);
-  color: var(--sidebar-text);
+  background-color: #fee2e2;
+  border-color: #fca5a5;
+  color: #dc2626;
 }
