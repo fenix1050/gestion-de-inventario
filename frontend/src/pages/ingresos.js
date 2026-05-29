@@ -8,6 +8,7 @@ import { getIngresos, crearIngreso } from '../services/ingresos.service.js';
 import { getArticulos } from '../services/articulos.service.js';
 import { authStore } from '../store/auth.store.js';
 import { Toast } from '../components/Toast.js';
+import { createLoader } from '../utils/loader.js';
 import { showModal, closeModal } from '../components/Modal.js';
 
 const LIMIT = 20;
@@ -22,7 +23,6 @@ export const render = async (container) => {
       <div class="page__header">
         <h1>Ingresos al Depósito</h1>
         <div class="page__header-actions">
-          <button type="button" id="btn-volver" class="btn btn--secondary">Volver al Dashboard</button>
           ${puedeRegistrar
             ? `<button type="button" id="btn-nuevo-ingreso" class="btn btn--primary">Registrar Ingreso</button>`
             : ''}
@@ -30,15 +30,12 @@ export const render = async (container) => {
       </div>
 
       <div class="table-wrapper">
-        <div id="ingresos-container">Cargando ingresos...</div>
+        <div id="ingresos-container">${createLoader('Cargando ingresos...')}</div>
       </div>
 
       <div id="paginacion-ingresos" class="pagination"></div>
     </div>
   `;
-
-  document.getElementById('btn-volver')
-    .addEventListener('click', () => { window.location.hash = '#/dashboard'; });
 
   if (puedeRegistrar) {
     document.getElementById('btn-nuevo-ingreso')

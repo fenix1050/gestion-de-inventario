@@ -13,6 +13,7 @@ import {
 import { authStore } from '../store/auth.store.js';
 import { Toast } from '../components/Toast.js';
 import { showModal, closeModal } from '../components/Modal.js';
+import { createLoader } from '../utils/loader.js';
 
 let debounceTimer = null;
 let abortController = null;
@@ -25,7 +26,6 @@ export const render = async (container) => {
     <div class="page page--articulos">
       <div class="page__header">
         <h1>Catálogo de Artículos</h1>
-        <button type="button" id="btn-volver" class="btn btn--secondary">Volver al Dashboard</button>
       </div>
 
       <div class="toolbar">
@@ -46,13 +46,10 @@ export const render = async (container) => {
       </div>
 
       <div class="table-wrapper">
-        <div id="articulos-container">Cargando artículos...</div>
+        <div id="articulos-container">${createLoader('Cargando artículos...')}</div>
       </div>
     </div>
   `;
-
-  document.getElementById('btn-volver')
-    .addEventListener('click', () => { window.location.hash = '#/dashboard'; });
 
   const inputBuscar = document.getElementById('input-buscar');
   inputBuscar.addEventListener('input', (e) => {

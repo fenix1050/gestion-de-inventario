@@ -1,0 +1,175 @@
+/* ============================================================
+   Login page
+   ============================================================ */
+
+.login-wrapper {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ── Panel izquierdo ── */
+.login-left {
+  flex: 0 0 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  padding: 2rem;
+}
+
+.login-form-box {
+  width: 100%;
+  max-width: 380px;
+}
+
+.login-title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--color-primary);
+  margin: 0 0 0.375rem;
+}
+
+.login-subtitle {
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: var(--color-text-light);
+  margin: 0 0 2rem;
+}
+
+/* Campos */
+.login-field {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.login-field input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  font-size: 0.95rem;
+  color: var(--color-text);
+  background: #fff;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+  outline: none;
+}
+
+.login-field input:focus {
+  border-color: var(--color-primary);
+}
+
+.login-field input::placeholder {
+  color: #adb5bd;
+}
+
+/* Toggle contraseña */
+.login-field--password input {
+  padding-right: 2.8rem;
+}
+
+.login-toggle-pw {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #adb5bd;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.login-toggle-pw:hover {
+  color: var(--color-primary);
+}
+
+/* Botón */
+.login-btn {
+  width: 100%;
+  padding: 0.85rem;
+  background-color: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--border-radius-md);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background-color 0.2s, opacity 0.2s;
+}
+
+.login-btn:hover:not(:disabled) {
+  background-color: var(--color-primary-dark);
+}
+
+.login-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Error */
+.login-error {
+  color: var(--color-danger);
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Link contacto */
+.login-contact {
+  margin-top: 1.25rem;
+  font-size: 0.875rem;
+  color: var(--color-text-light);
+}
+
+.login-contact a {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.login-contact a:hover {
+  text-decoration: underline;
+}
+
+/* Cita */
+.login-quote {
+  margin: 1.5rem 0 0;
+  padding-left: 1rem;
+  border-left: 3px solid var(--color-primary);
+  font-style: italic;
+  font-size: 0.875rem;
+  color: var(--color-text-light);
+}
+
+/* ── Panel derecho — imagen ── */
+.login-right {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+  padding: 1.5rem 1.5rem 1.5rem 0;
+  background: #fff;
+}
+
+.login-building-img {
+  width: 100%;
+  object-fit: cover;
+  border-radius: var(--border-radius-lg);
+  display: block;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .login-right {
+    display: none;
+  }
+
+  .login-left {
+    flex: 1;
+  }
+}

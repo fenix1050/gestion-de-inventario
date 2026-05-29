@@ -5,6 +5,7 @@
 
 import { getArticulos } from '../services/articulos.service.js';
 import { getHistorial } from '../services/historial.service.js';
+import { createLoader } from '../utils/loader.js';
 
 // Formatea un número como guaraníes (Gs. X.XXX.XXX)
 function formatGs(valor) {
@@ -35,7 +36,7 @@ function badgeStock(stockActual, stockMinimo) {
 
 export const render = async (container) => {
   // Estado de carga
-  container.innerHTML = '<div class="loader-container">Cargando...</div>';
+  container.innerHTML = createLoader('Cargando dashboard...');
 
   let articulos = [];
   let historial = [];

@@ -11,6 +11,7 @@ import { getUsuarios } from '../services/usuarios.service.js';
 import { authStore } from '../store/auth.store.js';
 import { Toast } from '../components/Toast.js';
 import { showModal, closeModal } from '../components/Modal.js';
+import { createLoader } from '../utils/loader.js';
 
 const LIMIT = 20;
 let paginaActual = 1;
@@ -24,7 +25,6 @@ export const render = async (container) => {
       <div class="page__header">
         <h1>Salidas del Depósito</h1>
         <div class="page__header-actions">
-          <button type="button" id="btn-volver" class="btn btn--secondary">Volver al Dashboard</button>
           ${puedeRegistrar
             ? `<button type="button" id="btn-nueva-salida" class="btn btn--primary">Registrar Salida</button>`
             : ''}
@@ -32,15 +32,12 @@ export const render = async (container) => {
       </div>
 
       <div class="table-wrapper">
-        <div id="salidas-container">Cargando salidas...</div>
+        <div id="salidas-container">${createLoader('Cargando salidas...')}</div>
       </div>
 
       <div id="paginacion-salidas" class="pagination"></div>
     </div>
   `;
-
-  document.getElementById('btn-volver')
-    .addEventListener('click', () => { window.location.hash = '#/dashboard'; });
 
   if (puedeRegistrar) {
     document.getElementById('btn-nueva-salida')

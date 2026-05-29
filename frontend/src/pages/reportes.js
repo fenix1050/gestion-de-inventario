@@ -7,6 +7,7 @@ import { showToast } from '../components/Toast.js';
 import * as reportesService from '../services/reportes.service.js';
 import { authStore } from '../store/auth.store.js';
 import { CONFIG } from '../config.js';
+import { createLoader } from '../utils/loader.js';
 
 // Instancia activa del chart — se destruye antes de crear uno nuevo
 let chartActual = null;
@@ -346,7 +347,7 @@ async function cargarTab(tabKey, panel, fechaDesde, fechaHasta) {
     chartActual = null;
   }
 
-  panel.innerHTML = '<div class="loader-container">Cargando...</div>';
+  panel.innerHTML = createLoader('Cargando...');
 
   const params = { fecha_desde: fechaDesde, fecha_hasta: fechaHasta };
 

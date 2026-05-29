@@ -15,8 +15,10 @@
 @import './components/table.css';
 @import './components/modal.css';
 @import './components/toast.css';
+@import './components/loader.css';
 
 /* Pages */
+@import './pages/login.css';
 @import './pages/dashboard.css';
 @import './pages/articulos.css';
 @import './pages/ingresos.css';

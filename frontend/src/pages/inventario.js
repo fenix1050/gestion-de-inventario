@@ -4,6 +4,7 @@
 // =============================================================
 
 import { getArticulos } from '../services/articulos.service.js';
+import { createLoader } from '../utils/loader.js';
 
 let debounceTimer  = null;
 let articulosTodos = [];
@@ -31,7 +32,7 @@ export const render = async (container) => {
       </div>
 
       <div class="table-wrapper">
-        <div id="inventario-container">Cargando...</div>
+        <div id="inventario-container">${createLoader('Cargando...')}</div>
       </div>
     </div>
   `;

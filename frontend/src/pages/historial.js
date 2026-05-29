@@ -8,6 +8,7 @@
 import { getHistorial } from '../services/historial.service.js';
 import { getArticulos } from '../services/articulos.service.js';
 import { Toast } from '../components/Toast.js';
+import { createLoader } from '../utils/loader.js';
 
 const LIMIT = 20;
 let paginaActual = 1;
@@ -18,9 +19,6 @@ export const render = async (container) => {
     <div class="page page--historial">
       <div class="page__header">
         <h1>Historial de Movimientos</h1>
-        <div class="page__header-actions">
-          <button type="button" id="btn-volver" class="btn btn--secondary">Volver al Dashboard</button>
-        </div>
       </div>
 
       <div class="filtros-bar" id="filtros-bar">
@@ -49,15 +47,12 @@ export const render = async (container) => {
       </div>
 
       <div class="table-wrapper">
-        <div id="historial-container">Cargando historial...</div>
+        <div id="historial-container">${createLoader('Cargando historial...')}</div>
       </div>
 
       <div id="paginacion-historial" class="pagination"></div>
     </div>
   `;
-
-  document.getElementById('btn-volver')
-    .addEventListener('click', () => { window.location.hash = '#/dashboard'; });
 
   document.getElementById('btn-aplicar-filtros')
     .addEventListener('click', () => {
@@ -110,7 +105,7 @@ async function cargarHistorial() {
   const cont = document.getElementById('historial-container');
   if (!cont) return;
 
-  cont.innerHTML = '<p class="loading-state">Cargando...</p>';
+  cont.innerHTML = createLoader('Cargando...');
 
   try {
     const data = await getHistorial({

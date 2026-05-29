@@ -9,6 +9,7 @@ import { getDepartamentos } from '../services/departamentos.service.js';
 import { authStore } from '../store/auth.store.js';
 import { Toast } from '../components/Toast.js';
 import { showModal, closeModal } from '../components/Modal.js';
+import { createLoader } from '../utils/loader.js';
 
 export const render = async (container) => {
   // Guard de rol: solo admin puede acceder
@@ -24,7 +25,6 @@ export const render = async (container) => {
       <div class="page__header">
         <h1>Gestión de Usuarios</h1>
         <div class="page__header-actions">
-          <button type="button" id="btn-volver" class="btn btn--secondary">Volver al Dashboard</button>
           <button type="button" id="btn-nuevo-usuario" class="btn btn--primary">Nuevo usuario</button>
         </div>
       </div>
@@ -34,9 +34,6 @@ export const render = async (container) => {
       </div>
     </div>
   `;
-
-  document.getElementById('btn-volver')
-    .addEventListener('click', () => { window.location.hash = '#/dashboard'; });
 
   document.getElementById('btn-nuevo-usuario')
     .addEventListener('click', abrirModalCrear);

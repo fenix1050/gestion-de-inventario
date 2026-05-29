@@ -101,11 +101,6 @@ export const Sidebar = {
       handleLogout();
     });
 
-    // Ir a dashboard desde dropdown
-    navbarEl.querySelector('[data-action="go-dashboard"]').addEventListener('click', () => {
-      dropdown.hidden = true;
-    });
-
     // Marcar link activo en el montaje inicial
     updateActiveLink();
 
@@ -148,8 +143,7 @@ function buildNavbarHTML(user) {
 
   return `
     <div class="navbar-brand">
-      <img src="./public/logo/logo.svg" alt="Tajy" class="navbar-logo">
-      <span>Aseguradora Tajy</span>
+      <img src="./public/logo/logo.svg" alt="Aseguradora Tajy" class="navbar-logo">
     </div>
     <div class="sidebar-avatar-wrap">
       <button type="button" class="sidebar-avatar" data-action="toggle-user-menu" aria-label="Menú de usuario">
@@ -162,9 +156,6 @@ function buildNavbarHTML(user) {
           <div class="sidebar-user-rol">Rol: ${capitalize(user.rol)}</div>
         </div>
         <div class="sidebar-user-actions">
-          <a href="#/dashboard" class="sidebar-dropdown-link" data-action="go-dashboard">
-            ${ICONS.dashboard} Dashboard
-          </a>
           <button type="button" class="sidebar-dropdown-link sidebar-dropdown-logout" data-action="logout">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             Cerrar Sesión
