@@ -21,7 +21,7 @@ const crearIngreso = async (payload) => {
   const { data: ingreso, error } = await supabase
     .from('ingresos')
     .insert(payload)
-    .select('id, fecha_ingreso, cantidad, precio_unitario, numero_factura, articulo_id, proveedor_id, observaciones')
+    .select('id, fecha, cantidad, precio_unitario, numero_factura, articulo_id, proveedor_id, observaciones')
     .single();
 
   if (error) throw new Error(error.message);
@@ -51,14 +51,14 @@ const crearIngreso = async (payload) => {
 const getIngresos = async ({ articulo_id, proveedor_id, desde, hasta, limit = 20, offset = 0 } = {}) => {
   let query = supabase
     .from('ingresos')
-    .select('id, fecha_ingreso, cantidad, precio_unitario, numero_factura, observaciones, articulo:articulos(id, codigo, nombre), proveedor:proveedores(id, nombre)')
-    .order('fecha_ingreso', { ascending: false })
+    .select('id, fecha, cantidad, precio_unitario, numero_factura, observaciones, articulo:articulos(id, codigo, nombre), proveedor:proveedores(id, nombre)')
+    .order('fecha', { ascending: false })
     .range(offset, offset + limit - 1);
 
   if (articulo_id)  query = query.eq('articulo_id', articulo_id);
   if (proveedor_id) query = query.eq('proveedor_id', proveedor_id);
-  if (desde)        query = query.gte('fecha_ingreso', desde);
-  if (hasta)        query = query.lte('fecha_ingreso', hasta);
+  if (desde)        query = query.gte('fecha', desde);
+  if (hasta)        query = query.lte('fecha', hasta);
 
   const { data, error } = await query;
 
