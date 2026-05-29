@@ -11,6 +11,7 @@ const { z } = require('zod');
 const ingresoCreateSchema = z.object({
   articulo_id:     z.string().uuid('articulo_id debe ser un UUID válido'),
   proveedor_id:    z.string().uuid('proveedor_id debe ser un UUID válido').optional(),
+  proveedor_nombre: z.string().trim().max(100, 'máximo 100 caracteres').optional(),
   cantidad:        z.number().int('debe ser entero').positive('debe ser mayor a 0'),
   precio_unitario: z.number().min(0, 'no puede ser negativo').optional(),
   referencia:      z.string().trim().max(50, 'máximo 50 caracteres').optional(),

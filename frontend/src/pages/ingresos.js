@@ -6,7 +6,6 @@
 
 import { getIngresos, crearIngreso } from '../services/ingresos.service.js';
 import { getArticulos } from '../services/articulos.service.js';
-import { getProveedores } from '../services/proveedores.service.js';
 import { authStore } from '../store/auth.store.js';
 import { Toast } from '../components/Toast.js';
 import { showModal, closeModal } from '../components/Modal.js';
@@ -74,7 +73,7 @@ function renderTabla(cont, ingresos) {
       <td>${formatFecha(ing.fecha)}</td>
       <td>${escapeHtml(ing.articulo?.nombre ?? '—')}</td>
       <td>${ing.cantidad}</td>
-      <td>${ing.proveedor?.nombre ?? '—'}</td>
+      <td>${escapeHtml(ing.proveedor_nombre ?? '—')}</td>
       <td>${ing.precio_unitario != null ? formatGs(ing.precio_unitario) : '—'}</td>
       <td>${ing.referencia ?? '—'}</td>
     </tr>
@@ -135,10 +134,9 @@ async function abrirDrawer() {
   if (btnNuevo) btnNuevo.disabled = true;
 
   let articulos = [];
-  let proveedores = [];
 
   try {
-    [articulos, proveedores] = await Promise.all([getArticulos(), getProveedores()]);
+    articulos = await getArticulos();
   } catch (err) {
     Toast.error('No se pudieron cargar los datos del formulario.');
     if (btnNuevo) btnNuevo.disabled = false;
@@ -150,19 +148,17 @@ async function abrirDrawer() {
   showModal({
     title: 'Registrar Ingreso',
     variant: 'drawer',
-    content: formHTML({ articulos, proveedores }),
+    content: formHTML({ articulos }),
     confirmText: 'Registrar',
     onConfirm: () => submitForm(),
   });
+
+  wireFormPrecio();
 }
 
-function formHTML({ articulos, proveedores }) {
+function formHTML({ articulos }) {
   const optsArticulos = articulos.map(a =>
     `<option value="${a.id}">${escapeHtml(a.codigo)} — ${escapeHtml(a.nombre)}</option>`
-  ).join('');
-
-  const optsProveedores = proveedores.map(p =>
-    `<option value="${p.id}">${escapeHtml(p.nombre)}</option>`
   ).join('');
 
   return `
@@ -183,15 +179,12 @@ function formHTML({ articulos, proveedores }) {
 
       <label class="form__field">
         <span>Precio Unitario (Gs.)</span>
-        <input name="precio_unitario" type="number" min="0" step="1" placeholder="Opcional">
+        <input name="precio_unitario" type="text" inputmode="numeric" placeholder="Opcional" data-precio>
       </label>
 
       <label class="form__field form__field--full">
         <span>Proveedor</span>
-        <select name="proveedor_id">
-          <option value="">Sin proveedor</option>
-          ${optsProveedores}
-        </select>
+        <input name="proveedor_nombre" type="text" maxlength="100" placeholder="Nombre del proveedor (opcional)">
       </label>
 
       <label class="form__field">
@@ -224,13 +217,13 @@ async function submitForm() {
     cantidad:    parseInt(fd.get('cantidad'), 10),
   };
 
-  const proveedor_id    = fd.get('proveedor_id');
-  const precio_unitario = fd.get('precio_unitario');
-  const referencia  = fd.get('referencia')?.trim();
-  const observaciones   = fd.get('observaciones')?.trim();
+  const proveedor_nombre = fd.get('proveedor_nombre')?.trim();
+  const precioRaw        = fd.get('precio_unitario')?.replace(/\./g, '').replace(/\s/g, '') ?? '';
+  const referencia       = fd.get('referencia')?.trim();
+  const observaciones    = fd.get('observaciones')?.trim();
 
-  if (proveedor_id)                    payload.proveedor_id    = proveedor_id;
-  if (precio_unitario !== '')           payload.precio_unitario = Number(precio_unitario);
+  if (proveedor_nombre)          payload.proveedor_nombre = proveedor_nombre;
+  if (precioRaw !== '')          payload.precio_unitario  = Number(precioRaw);
   if (referencia)                  payload.referencia  = referencia;
   if (observaciones)                   payload.observaciones   = observaciones;
 
@@ -265,6 +258,16 @@ function formatFecha(iso) {
 
 function formatGs(n) {
   return `Gs. ${Number(n).toLocaleString('es-PY')}`;
+}
+
+function wireFormPrecio() {
+  const input = document.querySelector('input[data-precio]');
+  if (!input) return;
+  input.addEventListener('input', () => {
+    const soloDigitos = input.value.replace(/\D/g, '');
+    const num = parseInt(soloDigitos, 10);
+    input.value = isNaN(num) ? '' : num.toLocaleString('es-PY');
+  });
 }
 
 function escapeHtml(s) {
