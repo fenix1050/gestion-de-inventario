@@ -134,7 +134,7 @@ function renderTabla(cont, movimientos) {
 
   const filas = movimientos.map((m) => {
     const esIngreso   = m.tipo === 'ingreso';
-    const badgeClass  = esIngreso ? 'badge--success' : 'badge--danger';
+    const badgeClass  = esIngreso ? 'badge--entrada' : 'badge--salida';
     const badgeLabel  = esIngreso ? 'Entrada' : 'Salida';
     const cantDisplay = esIngreso ? `+${m.cantidad}` : `-${m.cantidad}`;
     const cantClass   = esIngreso ? 'cantidad--positiva' : 'cantidad--negativa';
@@ -145,7 +145,7 @@ function renderTabla(cont, movimientos) {
     return `
       <tr>
         <td>${formatFecha(m.fecha)}</td>
-        <td><span class="badge ${badgeClass}">${badgeLabel}</span></td>
+        <td><span class="${badgeClass}">${badgeLabel}</span></td>
         <td>${escapeHtml(m.articulo_nombre ?? '—')}</td>
         <td class="cantidad-cell"><span class="${cantClass}">${cantDisplay}</span></td>
         <td>${origenDestino}</td>
