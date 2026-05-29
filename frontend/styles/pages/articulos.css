@@ -122,8 +122,8 @@
   padding: 1rem 0;
 }
 
-/* Página de artículos */
-.page--articulos {
+/* Layout compartido entre todas las páginas */
+.page {
   padding: 1.5rem;
 }
 
