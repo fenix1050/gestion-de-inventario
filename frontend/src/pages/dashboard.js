@@ -19,6 +19,7 @@ export const render = async (container) => {
 
       <div style="margin-top: 2rem; display: flex; gap: 1rem; flex-wrap: wrap;">
         <button id="btn-articulos" style="padding: 0.5rem 1rem; cursor: pointer;">Ir a Artículos</button>
+        <button id="btn-inventario" style="padding: 0.5rem 1rem; cursor: pointer;">Inventario</button>
         ${puedeVerIngresos
           ? `<button id="btn-ingresos" style="padding: 0.5rem 1rem; cursor: pointer;">Ingresos</button>`
           : ''}
@@ -33,6 +34,10 @@ export const render = async (container) => {
 
   document.getElementById('btn-articulos').addEventListener('click', () => {
     window.location.hash = '#/articulos';
+  });
+
+  document.getElementById('btn-inventario').addEventListener('click', () => {
+    window.location.hash = '#/inventario';
   });
 
   if (puedeVerIngresos) {
