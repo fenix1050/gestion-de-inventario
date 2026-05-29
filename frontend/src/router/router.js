@@ -40,6 +40,10 @@ const routes = {
     const { render } = await import('../pages/inventario.js');
     return render;
   },
+  '/reportes': async () => {
+    const { render } = await import('../pages/reportes.js');
+    return render;
+  },
   // Agregaremos más a medida que se implementen
 };
 

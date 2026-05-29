@@ -17,7 +17,7 @@ router.use('/proveedores',   require('./proveedores.routes'));
 router.use('/departamentos', require('./departamentos.routes'));
 router.use('/historial',    require('./historial.routes'));
 router.use('/usuarios',     require('./usuarios.routes'));
-// router.use('/reportes',     require('./reportes.routes'));
+router.use('/reportes',     require('./reportes.routes'));
 
 // Ruta de prueba — confirma que la API responde correctamente
 router.get('/', (_req, res) => {
