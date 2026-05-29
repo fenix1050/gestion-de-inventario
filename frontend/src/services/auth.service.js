@@ -45,6 +45,17 @@ export const authService = {
   },
 
   /**
+   * Cambia la contraseña del usuario autenticado.
+   * @param {string} nuevaPassword
+   */
+  async changePassword(nuevaPassword) {
+    return apiFetch('/auth/change-password', {
+      method: 'POST',
+      body: JSON.stringify({ nuevaPassword }),
+    });
+  },
+
+  /**
    * Cierra sesión
    */
   logout() {

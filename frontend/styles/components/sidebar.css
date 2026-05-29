@@ -125,23 +125,24 @@
 }
 
 .sidebar-avatar {
-  width: 2rem;
-  height: 2rem;
-  border-radius: var(--border-radius-sm);
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
   background-color: rgba(255, 255, 255, 0.2);
   color: #ffffff;
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-weight: 700;
-  border: none;
+  border: 2px solid rgba(255, 255, 255, 0.75);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.15s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
 .sidebar-avatar:hover {
-  opacity: 0.85;
+  background-color: rgba(255, 255, 255, 0.3);
+  border-color: #ffffff;
 }
 
 .sidebar-user-dropdown {
@@ -213,4 +214,31 @@
 
 .sidebar-dropdown-logout:hover {
   background-color: #fee2e2;
+}
+
+/* ---- Modal cambiar contraseña ---- */
+.cp-subtitle {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0 0 1rem;
+}
+
+.cp-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: var(--border-radius-sm);
+  padding: 0.625rem 0.75rem;
+  font-size: 0.8rem;
+  color: #92400e;
+  margin-top: 0.75rem;
+  line-height: 1.4;
+}
+
+.cp-hint svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: #d97706;
 }

@@ -4,6 +4,9 @@
 // =============================================================
 
 import { authStore } from '../store/auth.store.js';
+import { showModal, closeModal } from './Modal.js';
+import { Toast } from './Toast.js';
+import { authService } from '../services/auth.service.js';
 
 // Items de navegación con filtrado por rol
 const ICONS = {
@@ -101,6 +104,13 @@ export const Sidebar = {
       handleLogout();
     });
 
+    // Cambiar contraseña desde dropdown
+    navbarEl.querySelector('[data-action="change-password"]').addEventListener('click', (e) => {
+      e.preventDefault();
+      closeDropdown();
+      handleChangePassword();
+    });
+
     // Marcar link activo en el montaje inicial
     updateActiveLink();
 
@@ -156,6 +166,10 @@ function buildNavbarHTML(user) {
           <div class="sidebar-user-rol">Rol: ${capitalize(user.rol)}</div>
         </div>
         <div class="sidebar-user-actions">
+          <button type="button" class="sidebar-dropdown-link" data-action="change-password">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Cambiar Contraseña
+          </button>
           <button type="button" class="sidebar-dropdown-link sidebar-dropdown-logout" data-action="logout">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             Cerrar Sesión
@@ -217,4 +231,71 @@ function updateActiveLink() {
 async function handleLogout() {
   Sidebar.unmount();
   authStore.logout();
+}
+
+/**
+ * Abre el modal de cambio de contraseña.
+ * Valida que las contraseñas coincidan antes de llamar al backend.
+ */
+function handleChangePassword() {
+  const content = `
+    <p class="cp-subtitle">Ingresá tu nueva contraseña para actualizar el acceso.</p>
+    <div class="form-group">
+      <label class="form-label" for="cp-nueva">Nueva contraseña</label>
+      <input type="password" id="cp-nueva" class="form-input" placeholder="Mínimo 6 caracteres" autocomplete="new-password">
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="cp-confirmar">Confirmar contraseña</label>
+      <input type="password" id="cp-confirmar" class="form-input" placeholder="Repetí la nueva contraseña" autocomplete="new-password">
+    </div>
+    <div class="cp-hint">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Para mayor seguridad, se recomienda usar una combinación de mayúsculas, minúsculas y números.
+    </div>
+    <p id="cp-error" class="form-error" hidden></p>
+  `;
+
+  showModal({
+    title: '🔑 Cambiar Contraseña',
+    content,
+    confirmText: 'Guardar',
+    cancelText: 'Cancelar',
+    onConfirm: async () => {
+      const nuevaPassword    = document.getElementById('cp-nueva').value;
+      const confirmarPassword = document.getElementById('cp-confirmar').value;
+      const errorEl          = document.getElementById('cp-error');
+      const confirmBtn       = document.querySelector('#modal-container [data-action="confirm"]');
+
+      // Limpiar error previo
+      errorEl.hidden = true;
+      errorEl.textContent = '';
+
+      if (nuevaPassword.length < 6) {
+        errorEl.textContent = 'La contraseña debe tener al menos 6 caracteres.';
+        errorEl.hidden = false;
+        return;
+      }
+
+      if (nuevaPassword !== confirmarPassword) {
+        errorEl.textContent = 'Las contraseñas no coinciden.';
+        errorEl.hidden = false;
+        return;
+      }
+
+      // Deshabilitar botón mientras se procesa
+      confirmBtn.disabled = true;
+      confirmBtn.textContent = 'Guardando...';
+
+      try {
+        await authService.changePassword(nuevaPassword);
+        closeModal();
+        Toast.success('Contraseña actualizada correctamente.');
+      } catch (err) {
+        confirmBtn.disabled = false;
+        confirmBtn.textContent = 'Guardar';
+        errorEl.textContent = err.message || 'Error al actualizar la contraseña.';
+        errorEl.hidden = false;
+      }
+    },
+  });
 }

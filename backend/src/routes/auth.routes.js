@@ -8,7 +8,7 @@ const router = Router();
 router.get('/me', requireAuth, async (req, res) => {
   const { data, error } = await supabase
     .from('usuarios')
-    .select('id, rol, departamento_id, activo')
+    .select('id, nombre, rol, departamento_id, activo')
     .eq('id', req.user.id)
     .maybeSingle();
 
@@ -27,12 +27,30 @@ router.get('/me', requireAuth, async (req, res) => {
   return res.json({
     success: true,
     data: {
-      id:             req.user.id,
-      email:          req.user.email,
-      rol:            data.rol,
+      id:              req.user.id,
+      email:           req.user.email,
+      nombre:          data.nombre ?? null,
+      rol:             data.rol,
       departamento_id: data.departamento_id,
     },
   });
+});
+
+// POST /api/auth/change-password — cambia la contraseña del usuario autenticado
+router.post('/change-password', requireAuth, async (req, res) => {
+  const { nuevaPassword } = req.body;
+
+  if (!nuevaPassword || nuevaPassword.length < 6) {
+    return res.status(400).json({ success: false, error: 'La contraseña debe tener al menos 6 caracteres.' });
+  }
+
+  const { error } = await supabase.auth.admin.updateUserById(req.user.id, { password: nuevaPassword });
+
+  if (error) {
+    return res.status(400).json({ success: false, error: error.message });
+  }
+
+  return res.json({ success: true, message: 'Contraseña actualizada correctamente.' });
 });
 
 module.exports = router;

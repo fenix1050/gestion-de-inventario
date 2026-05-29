@@ -12,19 +12,21 @@ function formatGs(valor) {
   return 'Gs. ' + Math.round(valor).toLocaleString('es-PY');
 }
 
-// Formatea una fecha ISO como DD/MM/YYYY
+const TZ = 'America/Asuncion';
+const DATE_OPTS = { timeZone: TZ, day: '2-digit', month: '2-digit', year: 'numeric' };
+
+// Formatea una fecha ISO como DD/MM/YYYY en zona horaria de Paraguay (GMT-4, sin horario de verano)
 function formatFecha(fechaISO) {
   if (!fechaISO) return '—';
-  const d = new Date(fechaISO);
-  return d.toLocaleDateString('es-PY', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  return new Date(fechaISO).toLocaleDateString('es-PY', DATE_OPTS);
 }
 
-// Devuelve true si la fecha ISO corresponde al día de hoy (comparación local)
+// Devuelve true si la fecha ISO corresponde al día de hoy en Paraguay
 function esHoy(fechaISO) {
   if (!fechaISO) return false;
-  const hoy = new Date();
-  const hoyStr = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-${String(hoy.getDate()).padStart(2, '0')}`;
-  return fechaISO.slice(0, 10) === hoyStr;
+  const hoy = new Date().toLocaleDateString('es-PY', DATE_OPTS);
+  const fecha = new Date(fechaISO).toLocaleDateString('es-PY', DATE_OPTS);
+  return hoy === fecha;
 }
 
 // Construye el HTML del badge de estado de stock
@@ -95,16 +97,44 @@ export const render = async (container) => {
 
   const maxConsumo = topDepartamentos.length ? topDepartamentos[0][1] : 1;
 
+  // Calcular ticks del eje Y (0, 25%, 50%, 75%, 100% del máximo, redondeados)
+  const yTicks = topDepartamentos.length
+    ? (() => {
+        const step = Math.ceil(maxConsumo / 4);
+        return [0, step, step * 2, step * 3, step * 4];
+      })()
+    : [0, 15, 30, 45, 60];
+
+  const yMax = yTicks[yTicks.length - 1];
+
+  const yAxisHTML = [...yTicks].reverse().map(t =>
+    `<div class="bc-y-tick">${t}</div>`
+  ).join('');
+
+  const gridLinesHTML = [...yTicks].reverse().map(() =>
+    `<div class="bc-grid-line"></div>`
+  ).join('');
+
   const barChartHTML = topDepartamentos.length
-    ? topDepartamentos.map(([dep, cantidad]) => {
-        const alturaPct = Math.max(4, Math.round((cantidad / maxConsumo) * 100));
-        return `
-          <div class="bar-chart-item">
-            <div class="bar" style="height: ${alturaPct}%;" title="${dep}: ${cantidad}"></div>
-            <div class="bar-label" title="${dep}">${dep}</div>
+    ? `
+      <div class="bc-wrapper">
+        <div class="bc-y-axis">${yAxisHTML}</div>
+        <div class="bc-plot">
+          <div class="bc-grid">${gridLinesHTML}</div>
+          <div class="bc-bars">
+            ${topDepartamentos.map(([dep, cantidad]) => {
+              const alturaPct = Math.max(2, Math.round((cantidad / yMax) * 100));
+              return `
+                <div class="bc-bar-item">
+                  <div class="bc-bar" style="height:${alturaPct}%" title="${dep}: ${cantidad}"></div>
+                  <div class="bc-bar-label" title="${dep}">${dep}</div>
+                </div>
+              `;
+            }).join('')}
           </div>
-        `;
-      }).join('')
+        </div>
+      </div>
+    `
     : '<p class="dashboard-empty">Sin datos de consumo</p>';
 
   // ---- Movimientos recientes — últimos 10 ----
@@ -210,9 +240,7 @@ export const render = async (container) => {
         <div class="dashboard-card">
           <div class="dashboard-card-title">Consumo por Departamento</div>
           <div class="dashboard-card-subtitle">Top 5 departamentos por cantidad de salidas</div>
-          <div class="bar-chart">
-            ${barChartHTML}
-          </div>
+          ${barChartHTML}
         </div>
       </div>
 

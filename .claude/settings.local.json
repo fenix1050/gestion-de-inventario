@@ -4,7 +4,14 @@
       "mcp__plugin_engram_engram__mem_context",
       "mcp__plugin_engram_engram__mem_search",
       "Bash(npm run *)",
-      "mcp__plugin_engram_engram__mem_save"
+      "mcp__plugin_engram_engram__mem_save",
+      "mcp__plugin_engram_engram__mem_get_observation",
+      "mcp__plugin_engram_engram__mem_update",
+      "mcp__plugin_engram_engram__mem_session_summary",
+      "mcp__plugin_engram_engram__mem_judge",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)"
     ]
   }
 }
