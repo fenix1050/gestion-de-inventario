@@ -21,7 +21,7 @@ const crearIngreso = async (payload) => {
   const { data: ingreso, error } = await supabase
     .from('ingresos')
     .insert(payload)
-    .select('id, fecha, cantidad, precio_unitario, numero_factura, articulo_id, proveedor_id, observaciones')
+    .select('id, fecha, cantidad, precio_unitario, referencia, articulo_id, proveedor_id, observaciones')
     .single();
 
   if (error) throw new Error(error.message);
@@ -51,7 +51,7 @@ const crearIngreso = async (payload) => {
 const getIngresos = async ({ articulo_id, proveedor_id, desde, hasta, limit = 20, offset = 0 } = {}) => {
   let query = supabase
     .from('ingresos')
-    .select('id, fecha, cantidad, precio_unitario, numero_factura, observaciones, articulo:articulos(id, codigo, nombre), proveedor:proveedores(id, nombre)')
+    .select('id, fecha, cantidad, precio_unitario, referencia, observaciones, articulo:articulos(id, codigo, nombre), proveedor:proveedores(id, nombre)')
     .order('fecha', { ascending: false })
     .range(offset, offset + limit - 1);
 

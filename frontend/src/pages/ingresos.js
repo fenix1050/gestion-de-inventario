@@ -71,12 +71,12 @@ function renderTabla(cont, ingresos) {
 
   const filas = ingresos.map((ing) => `
     <tr>
-      <td>${formatFecha(ing.fecha_ingreso)}</td>
+      <td>${formatFecha(ing.fecha)}</td>
       <td>${escapeHtml(ing.articulo?.nombre ?? '—')}</td>
       <td>${ing.cantidad}</td>
       <td>${ing.proveedor?.nombre ?? '—'}</td>
       <td>${ing.precio_unitario != null ? formatGs(ing.precio_unitario) : '—'}</td>
-      <td>${ing.numero_factura ?? '—'}</td>
+      <td>${ing.referencia ?? '—'}</td>
     </tr>
   `).join('');
 
@@ -196,7 +196,7 @@ function formHTML({ articulos, proveedores }) {
 
       <label class="form__field">
         <span>N° Factura</span>
-        <input name="numero_factura" type="text" maxlength="50" placeholder="Opcional">
+        <input name="referencia" type="text" maxlength="50" placeholder="Opcional">
       </label>
 
       <label class="form__field form__field--full">
@@ -226,12 +226,12 @@ async function submitForm() {
 
   const proveedor_id    = fd.get('proveedor_id');
   const precio_unitario = fd.get('precio_unitario');
-  const numero_factura  = fd.get('numero_factura')?.trim();
+  const referencia  = fd.get('referencia')?.trim();
   const observaciones   = fd.get('observaciones')?.trim();
 
   if (proveedor_id)                    payload.proveedor_id    = proveedor_id;
   if (precio_unitario !== '')           payload.precio_unitario = Number(precio_unitario);
-  if (numero_factura)                  payload.numero_factura  = numero_factura;
+  if (referencia)                  payload.referencia  = referencia;
   if (observaciones)                   payload.observaciones   = observaciones;
 
   const submitBtn = document.querySelector('#modal-container button[data-action="confirm"]');
