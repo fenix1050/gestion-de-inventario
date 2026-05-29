@@ -16,23 +16,6 @@
 @import './components/modal.css';
 @import './components/toast.css';
 
-/* Layout base compartido entre páginas */
-.page {
-  padding: 1.5rem;
-}
-
-.page__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-}
-
-.page__header h1 {
-  margin: 0;
-  font-size: 1.5rem;
-}
-
 /* Pages */
 @import './pages/dashboard.css';
 @import './pages/articulos.css';
