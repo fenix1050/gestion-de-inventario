@@ -63,7 +63,8 @@ const handleRoute = async () => {
     return;
   }
 
-  const appContainer = document.getElementById('app');
+  // Cuando el shell está montado usamos #page-content; si no, caemos a #app (ej: login)
+  const appContainer = document.getElementById('page-content') || document.getElementById('app');
   
   // Limpiamos el contenedor
   appContainer.innerHTML = '<div class="loader-container">Cargando...</div>';

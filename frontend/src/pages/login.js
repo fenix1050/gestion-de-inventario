@@ -4,6 +4,7 @@
 // =============================================================
 
 import { authService } from '../services/auth.service.js';
+import { Sidebar } from '../components/Sidebar.js';
 
 export const render = async (container) => {
   container.innerHTML = `
@@ -73,7 +74,9 @@ export const render = async (container) => {
 
     try {
       await authService.login(email, password);
-      // Si el login fue exitoso, redirigimos al dashboard
+      // Montar el sidebar antes de navegar para que #page-content exista
+      Sidebar.mount(document.getElementById('app'));
+      // Redirigir al dashboard
       window.location.hash = '#/dashboard';
     } catch (error) {
       // Mostramos el error

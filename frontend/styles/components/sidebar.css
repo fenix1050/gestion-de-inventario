@@ -1,0 +1,142 @@
+/* =============================================================
+   frontend/styles/components/sidebar.css
+   Layout del shell de dos columnas y estilos del sidebar lateral
+   ============================================================= */
+
+:root {
+  --sidebar-width: 240px;
+  --sidebar-bg: var(--color-primary-dark);
+  --sidebar-text: #f8f9fa;
+  --sidebar-text-muted: rgba(248, 249, 250, 0.65);
+  --sidebar-active-bg: rgba(255, 255, 255, 0.15);
+  --sidebar-hover-bg: rgba(255, 255, 255, 0.08);
+}
+
+/* Shell de dos columnas — se activa solo cuando el sidebar está montado */
+#app.has-shell {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ---- Sidebar ---- */
+#sidebar {
+  width: var(--sidebar-width);
+  flex-shrink: 0;
+  height: 100vh;
+  background-color: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+/* ---- Área de contenido ---- */
+#page-content {
+  flex: 1;
+  height: 100vh;
+  overflow-y: auto;
+  background-color: var(--color-background);
+}
+
+/* ---- Header del sidebar ---- */
+.sidebar-header {
+  padding: 1.25rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-brand {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--sidebar-text);
+}
+
+/* ---- Navegación ---- */
+.sidebar-nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem 0;
+  gap: 2px;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.625rem 1rem;
+  color: var(--sidebar-text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  border-radius: 0;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.sidebar-link:hover {
+  background-color: var(--sidebar-hover-bg);
+  color: var(--sidebar-text);
+}
+
+.sidebar-link.is-active {
+  background-color: var(--sidebar-active-bg);
+  color: var(--sidebar-text);
+  font-weight: 600;
+  border-left: 3px solid var(--sidebar-text);
+}
+
+.sidebar-icon {
+  font-size: 1rem;
+  width: 1.25rem;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* ---- Footer del sidebar ---- */
+.sidebar-footer {
+  padding: 0.75rem 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sidebar-user {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.sidebar-user-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--sidebar-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-user-rol {
+  font-size: 0.75rem;
+  color: var(--sidebar-text-muted);
+  text-transform: capitalize;
+}
+
+.sidebar-logout {
+  width: 100%;
+  padding: 0.4rem 0.75rem;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: var(--border-radius-sm);
+  color: var(--sidebar-text-muted);
+  font-size: 0.8rem;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.sidebar-logout:hover {
+  background-color: rgba(220, 53, 69, 0.3);
+  border-color: rgba(220, 53, 69, 0.6);
+  color: var(--sidebar-text);
+}
