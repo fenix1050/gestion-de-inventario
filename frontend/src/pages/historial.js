@@ -132,22 +132,26 @@ function renderTabla(cont, movimientos) {
     return;
   }
 
-  const filas = movimientos.map((m) => `
-    <tr>
-      <td>${formatFecha(m.fecha)}</td>
-      <td>
-        <span class="badge badge--${m.tipo === 'ingreso' ? 'success' : 'warning'}">
-          ${m.tipo === 'ingreso' ? 'INGRESO' : 'SALIDA'}
-        </span>
-      </td>
-      <td>
-        <span class="articulo-codigo">${escapeHtml(m.articulo_codigo ?? '—')}</span>
-        ${escapeHtml(m.articulo_nombre ?? '—')}
-      </td>
-      <td>${m.cantidad}</td>
-      <td>${escapeHtml(m.registrado_por ?? '—')}</td>
-    </tr>
-  `).join('');
+  const filas = movimientos.map((m) => {
+    const esIngreso   = m.tipo === 'ingreso';
+    const badgeClass  = esIngreso ? 'badge--success' : 'badge--danger';
+    const badgeLabel  = esIngreso ? 'Entrada' : 'Salida';
+    const cantDisplay = esIngreso ? `+${m.cantidad}` : `-${m.cantidad}`;
+    const cantClass   = esIngreso ? 'cantidad--positiva' : 'cantidad--negativa';
+    const origenDestino = esIngreso
+      ? escapeHtml(m.proveedor_nombre ?? m.proveedor ?? '—')
+      : escapeHtml(m.departamento_nombre ?? m.colaborador ?? '—');
+
+    return `
+      <tr>
+        <td>${formatFecha(m.fecha)}</td>
+        <td><span class="badge ${badgeClass}">${badgeLabel}</span></td>
+        <td>${escapeHtml(m.articulo_nombre ?? '—')}</td>
+        <td class="cantidad-cell"><span class="${cantClass}">${cantDisplay}</span></td>
+        <td>${origenDestino}</td>
+      </tr>
+    `;
+  }).join('');
 
   cont.innerHTML = `
     <table class="table">
@@ -157,7 +161,7 @@ function renderTabla(cont, movimientos) {
           <th>Tipo</th>
           <th>Artículo</th>
           <th>Cantidad</th>
-          <th>Registrado por</th>
+          <th>Origen / Destino</th>
         </tr>
       </thead>
       <tbody>${filas}</tbody>
