@@ -19,10 +19,10 @@
   margin: 0 0 0.25rem;
 }
 
-.dashboard-header p {
-  color: var(--color-text-light);
-  font-size: 0.9rem;
-  margin: 0;
+.dashboard-subtitle {
+  color: var(--color-primary);
+  font-size: 0.875rem;
+  margin: 0.25rem 0 0;
 }
 
 /* ---- Stat cards ---- */
@@ -38,29 +38,49 @@
   border-radius: var(--border-radius-md);
   box-shadow: var(--shadow-sm);
   padding: 1.25rem;
-  border-left: 3px solid var(--color-primary);
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
-.stat-card--alerta {
-  border-left-color: #f59e0b;
+.stat-card--alerta .stat-card-value {
+  color: #dc2626;
 }
 
-.stat-card-icon {
-  font-size: 1.25rem;
+.stat-card--alerta .stat-card-top svg {
+  color: #dc2626;
+}
+
+.stat-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 0.5rem;
+}
+
+.stat-card-top svg {
+  color: var(--color-text-light);
+  flex-shrink: 0;
 }
 
 .stat-card-value {
   font-size: 1.75rem;
   font-weight: 700;
   line-height: 1;
-  margin-bottom: 0.25rem;
   color: var(--color-text);
 }
 
 .stat-card-label {
   font-size: 0.8rem;
-  color: var(--color-text-light);
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.stat-card-sub {
+  font-size: 0.75rem;
+  color: var(--color-primary);
+  margin-top: 0.125rem;
 }
 
 /* ---- Grid de dos columnas ---- */

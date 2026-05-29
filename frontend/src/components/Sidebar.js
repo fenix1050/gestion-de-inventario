@@ -6,14 +6,24 @@
 import { authStore } from '../store/auth.store.js';
 
 // Items de navegación con filtrado por rol
+const ICONS = {
+  dashboard: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
+  articulos:  `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>`,
+  inventario: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="15" y2="16"/><line x1="9" y1="8" x2="11" y2="8"/></svg>`,
+  ingresos:   `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>`,
+  salidas:    `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>`,
+  historial:  `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="12 8 12 12 14 14"/><path d="M3.05 11a9 9 0 1 1 .5 4"/><polyline points="3 16 3 11 8 11"/></svg>`,
+  usuarios:   `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+};
+
 const NAV_ITEMS = [
-  { id: 'dashboard', label: 'Dashboard',  route: '/dashboard',  icon: '🏠', roles: ['consultor', 'operador', 'admin'] },
-  { id: 'articulos', label: 'Artículos',  route: '/articulos',  icon: '📦', roles: ['consultor', 'operador', 'admin'] },
-  { id: 'inventario',label: 'Inventario', route: '/inventario', icon: '📋', roles: ['consultor', 'operador', 'admin'] },
-  { id: 'ingresos',  label: 'Ingresos',   route: '/ingresos',   icon: '➕', roles: ['operador', 'admin'] },
-  { id: 'salidas',   label: 'Salidas',    route: '/salidas',    icon: '➖', roles: ['operador', 'admin'] },
-  { id: 'historial', label: 'Historial',  route: '/historial',  icon: '📜', roles: ['consultor', 'operador', 'admin'] },
-  { id: 'usuarios',  label: 'Usuarios',   route: '/usuarios',   icon: '👥', roles: ['admin'] },
+  { id: 'dashboard', label: 'Dashboard',  route: '/dashboard',  icon: ICONS.dashboard,  roles: ['consultor', 'operador', 'admin'] },
+  { id: 'articulos', label: 'Artículos',  route: '/articulos',  icon: ICONS.articulos,  roles: ['consultor', 'operador', 'admin'] },
+  { id: 'inventario',label: 'Inventario', route: '/inventario', icon: ICONS.inventario, roles: ['consultor', 'operador', 'admin'] },
+  { id: 'ingresos',  label: 'Ingresos',   route: '/ingresos',   icon: ICONS.ingresos,   roles: ['operador', 'admin'] },
+  { id: 'salidas',   label: 'Salidas',    route: '/salidas',    icon: ICONS.salidas,    roles: ['operador', 'admin'] },
+  { id: 'historial', label: 'Historial',  route: '/historial',  icon: ICONS.historial,  roles: ['consultor', 'operador', 'admin'] },
+  { id: 'usuarios',  label: 'Usuarios',   route: '/usuarios',   icon: ICONS.usuarios,   roles: ['admin'] },
 ];
 
 // Estado privado del singleton — no se exporta
@@ -147,7 +157,7 @@ function buildSidebarHTML(user) {
           </div>
           <div class="sidebar-user-actions">
             <a href="#/dashboard" class="sidebar-dropdown-link" data-action="go-dashboard">
-              <span>🏠</span> Dashboard
+              ${ICONS.dashboard} Dashboard
             </a>
             <button type="button" class="sidebar-dropdown-link sidebar-dropdown-logout" data-action="logout">
               <span>↪</span> Cerrar Sesión

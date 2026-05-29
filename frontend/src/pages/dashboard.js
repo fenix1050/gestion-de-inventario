@@ -3,7 +3,6 @@
 // Página principal — Dashboard con estadísticas y gráficos
 // =============================================================
 
-import { authStore } from '../store/auth.store.js';
 import { getArticulos } from '../services/articulos.service.js';
 import { getHistorial } from '../services/historial.service.js';
 
@@ -39,10 +38,6 @@ function badgeStock(stockActual, stockMinimo) {
 }
 
 export const render = async (container) => {
-  const user = authStore.user;
-  const nombreUsuario = user?.nombre || user?.email || 'Usuario';
-  const rol = user?.rol || '—';
-
   // Estado de carga
   container.innerHTML = '<div class="loader-container">Cargando...</div>';
 
@@ -50,13 +45,13 @@ export const render = async (container) => {
   let historial = [];
 
   try {
-    const [resArticulos, resHistorial] = await Promise.all([
+    [articulos, historial] = await Promise.all([
       getArticulos(),
       getHistorial({ limit: 50 }),
     ]);
 
-    if (resArticulos.success) articulos = resArticulos.data || [];
-    if (resHistorial.success) historial = resHistorial.data || [];
+    articulos = articulos || [];
+    historial = historial || [];
   } catch (err) {
     container.innerHTML = `<div class="dashboard-error">Error al cargar el dashboard: ${err.message}</div>`;
     return;
@@ -167,30 +162,42 @@ export const render = async (container) => {
     <div class="dashboard">
       <div class="dashboard-header">
         <h1>Dashboard</h1>
-        <p>Bienvenido/a, <strong>${nombreUsuario}</strong> · <span class="badge-rol">${rol}</span></p>
+        <p class="dashboard-subtitle">Resumen general del inventario</p>
       </div>
 
       <!-- Stat cards -->
       <div class="stat-cards">
         <div class="stat-card">
-          <div class="stat-card-icon">📦</div>
+          <div class="stat-card-top">
+            <span class="stat-card-label">Total de Artículos</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+          </div>
           <div class="stat-card-value">${totalArticulos}</div>
-          <div class="stat-card-label">Total de Artículos</div>
+          <div class="stat-card-sub">Artículos registrados</div>
         </div>
         <div class="stat-card">
-          <div class="stat-card-icon">$</div>
+          <div class="stat-card-top">
+            <span class="stat-card-label">Valor Total</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
           <div class="stat-card-value">${formatGs(valorTotal)}</div>
-          <div class="stat-card-label">Valor Total en Stock</div>
+          <div class="stat-card-sub">Valor del inventario</div>
         </div>
         <div class="stat-card">
-          <div class="stat-card-icon">↗</div>
+          <div class="stat-card-top">
+            <span class="stat-card-label">Movimientos Hoy</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          </div>
           <div class="stat-card-value">${movimientosHoy}</div>
-          <div class="stat-card-label">Movimientos Hoy</div>
+          <div class="stat-card-sub">Transacciones del día</div>
         </div>
-        <div class="stat-card stat-card--alerta">
-          <div class="stat-card-icon">⚠</div>
+        <div class="stat-card ${alertasStock > 0 ? 'stat-card--alerta' : ''}">
+          <div class="stat-card-top">
+            <span class="stat-card-label">Alertas de Stock</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
           <div class="stat-card-value">${alertasStock}</div>
-          <div class="stat-card-label">Alertas de Stock</div>
+          <div class="stat-card-sub">Artículos con stock bajo</div>
         </div>
       </div>
 
