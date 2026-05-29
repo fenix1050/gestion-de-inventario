@@ -122,19 +122,3 @@
   padding: 1rem 0;
 }
 
-/* Página de artículos */
-.page--articulos {
-  padding: 1.5rem;
-}
-
-.page__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-}
-
-.page__header h1 {
-  margin: 0;
-  font-size: 1.5rem;
-}
